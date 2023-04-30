@@ -5,6 +5,7 @@ class Location(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
     city = models.CharField(max_length=256, verbose_name='Город')
     address = models.CharField(max_length=256, verbose_name='Адрес')
+    phone = models.CharField(max_length=32, verbose_name="Номер телефона", blank=True, null=True)
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     def __str__(self):
@@ -31,13 +32,15 @@ class Asset(models.Model):
     price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7)
     state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES)
     status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES)
+    is_active = models.BooleanField(default=True, verbose_name="Активный")
+    auto_update_price = models.BooleanField(default=False, verbose_name="Автообновление стоимости")
 
     def __str__(self):
         return self.name
 
     class Meta:
         verbose_name = "Актив"
-        verbose_name_plural = "Активвы"
+        verbose_name_plural = "Активы"
 
 
 class AssetImage(models.Model):
