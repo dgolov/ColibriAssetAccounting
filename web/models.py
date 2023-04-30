@@ -5,6 +5,7 @@ class Location(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
     city = models.CharField(max_length=256, verbose_name='Город')
     address = models.CharField(max_length=256, verbose_name='Адрес')
+    phone = models.CharField(max_length=32, verbose_name="Номер телефона", blank=True, null=True)
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
 
     def __str__(self):
