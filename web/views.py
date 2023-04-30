@@ -10,6 +10,7 @@ class MainView(ListView):
     model = Asset
     template_name = 'web/index.html'
     context_object_name = 'assets'
+    paginate_by = 30
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(MainView, self).get_context_data()
@@ -80,6 +81,7 @@ class LocationList(ListView):
     """
     model = Location
     context_object_name = 'locations'
+    paginate_by = 30
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationList, self).get_context_data()
@@ -137,6 +139,7 @@ class OrderList(ListView):
     """
     model = Order
     context_object_name = 'orders'
+    paginate_by = 30
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(OrderList, self).get_context_data()
