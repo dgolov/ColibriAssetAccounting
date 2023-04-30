@@ -35,11 +35,21 @@ class AssetDetail(DetailView):
 class CreateAssert(CreateView):
     """ Создание нового актива
     """
+    # template_name = 'crm/create_academic_performance.html'
+    # form_class = forms.CreateAcademicPerformanceForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssert, self).get_context_data()
         context['title'] = 'Create asset'
         return context
+
+    # def form_valid(self, form):
+    #     form.save()
+    #     return HttpResponseRedirect('/api/crm/academic-performance')
+    #
+    # def form_invalid(self, form):
+    #     messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
+    #     return HttpResponseRedirect('/api/crm/academic-performance')
 
 
 class UpdateAsset(UpdateView):
