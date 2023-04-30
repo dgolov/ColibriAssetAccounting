@@ -28,8 +28,8 @@ class AssetDetail(DetailView):
     """ Детальное представление актива
     """
     model = Asset
-    # template_name = 'web/asset_detail.html'
-    context_object_name = 'assets'
+    template_name = 'web/asset_detail.html'
+    context_object_name = 'asset'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetDetail, self).get_context_data()
