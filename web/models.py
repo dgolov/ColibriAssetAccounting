@@ -32,6 +32,7 @@ class Asset(models.Model):
     state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES)
     status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES)
     is_active = models.BooleanField(default=True, verbose_name="Активный")
+    auto_update_price = models.BooleanField(default=False, verbose_name="Автообновление стоимости")
 
     def __str__(self):
         return self.name
