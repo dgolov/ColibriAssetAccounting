@@ -1,3 +1,4 @@
+from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.shortcuts import render
 from web.models import Asset, AssetImage, Location, Order, History
@@ -22,46 +23,122 @@ class MainView(ListView):
 class AssetDetail(DetailView):
     """ Детальное представление актива
     """
-    pass
+    model = Asset
+    context_object_name = 'assets'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(AssetDetail, self).get_context_data()
+        context['title'] = 'Asset'
+        return context
 
 
 class CreateAssert(CreateView):
     """ Создание нового актива
     """
-    pass
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CreateAssert, self).get_context_data()
+        context['title'] = 'Create asset'
+        return context
 
 
 class UpdateAsset(UpdateView):
     """ Обновление актива
     """
-    pass
+    model = Asset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UpdateAsset, self).get_context_data()
+        context['title'] = 'Update asset'
+        return context
 
 
 class DeleteAssert(DeleteView):
     """ Удаление актива
     """
-    pass
+    model = Asset
+    success_url = reverse_lazy('main')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(DeleteAssert, self).get_context_data()
+        context['title'] = 'Delete asset'
+        return context
+
+
+class LocationList(ListView):
+    """ Список локаций
+    """
+    model = Location
+    context_object_name = 'locations'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(LocationList, self).get_context_data()
+        context['title'] = 'Locations'
+        return context
+
+
+class LocationDetail(DetailView):
+    """ Детальное представление локаций
+    """
+    model = Location
+    context_object_name = 'location'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(LocationDetail, self).get_context_data()
+        context['title'] = 'location Detail'
+        return context
 
 
 class CreateLocation(CreateView):
     """ Создание местоположения
     """
-    pass
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CreateLocation, self).get_context_data()
+        context['title'] = 'Create location'
+        return context
 
 
 class UpdateLocation(UpdateView):
     """ Обновление местоположения
     """
-    pass
+    model = Location
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UpdateLocation, self).get_context_data()
+        context['title'] = 'Update location'
+        return context
 
 
 class DeleteLocation(DeleteView):
     """ Удаление местоположения
     """
-    pass
+    model = Location
+    success_url = reverse_lazy('locations')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(DeleteLocation, self).get_context_data()
+        context['title'] = 'Delete location'
+        return context
+
+
+class OrderList(ListView):
+    """ Список отчетов
+    """
+    model = Order
+    context_object_name = 'orders'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderList, self).get_context_data()
+        context['title'] = 'Orders'
+        return context
 
 
 class CreateOrder(CreateView):
     """ Формировпние и загрузка отчета
     """
-    pass
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CreateOrder, self).get_context_data()
+        context['title'] = 'Create order'
+        return context
