@@ -7,7 +7,7 @@ from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
 
 
-class MainView(ListView):
+class AssetList(ListView):
     """ Представление главной страницы (список активов)
     """
     model = Asset
@@ -16,7 +16,7 @@ class MainView(ListView):
     paginate_by = 30
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(MainView, self).get_context_data()
+        context = super(AssetList, self).get_context_data()
         context['title'] = 'Main page'
         return context
 
