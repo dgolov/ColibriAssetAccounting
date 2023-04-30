@@ -10,7 +10,7 @@ admin.site.site_title = 'Административная панель'
 class AssetsAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'location', 'updated_at', 'price', 'is_active']
     list_display_links = ['id', 'name']
-    list_filter = ['name', 'location', 'is_active']
+    list_filter = ['location__name', 'is_active']
     search_fields = ['name']
     list_editable = ['is_active']
 
@@ -25,7 +25,7 @@ class AssetImageAdmin(admin.ModelAdmin):
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'city', 'address']
     list_display_links = ['id', 'name']
-    list_filter = ['name', 'city']
+    list_filter = ['city']
     search_fields = ['name']
 
 
