@@ -31,6 +31,7 @@ class Asset(models.Model):
     price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7)
     state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES)
     status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES)
+    is_active = models.BooleanField(default=True, verbose_name="Активный")
 
     def __str__(self):
         return self.name
