@@ -38,7 +38,7 @@ class Asset(models.Model):
 
     class Meta:
         verbose_name = "Актив"
-        verbose_name_plural = "Активвы"
+        verbose_name_plural = "Активы"
 
 
 class AssetImage(models.Model):
