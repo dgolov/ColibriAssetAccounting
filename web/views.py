@@ -1,10 +1,17 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
+
+
+class Auth(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'web/login.html', {})
 
 
 class AssetList(ListView):
