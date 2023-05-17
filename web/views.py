@@ -134,7 +134,7 @@ class LocationList(ListView):
     """ Список локаций
     """
     model = Location
-    # template_name = 'web/locations.html'
+    template_name = 'web/locations.html'
     context_object_name = 'locations'
     paginate_by = 30
 
