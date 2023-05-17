@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-heading">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="page-title">{{ asset.name }}</h1>
+            </div>
+            <div class="col-md-2">
+                <a type="button" href=""
+                   class="btn btn-outline-primary px-5 mt-5" style="float: right;">
+                    Редактировать
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a type="button" href=""
+                   class="btn btn-outline-danger px-5 mt-5" style="float: right;">
+                    Удалить актив
+                </a>
+            </div>
+        </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Активы</a>
+            </li>
+            <li class="breadcrumb-item">{{ asset.name }}</li>
+        </ol>
+    </div>
+    <div class="page-content fade-in-up">
+        <div class="ibox invoice">
+            <div class="invoice-header">
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <div class="m-b-5 font-bold">Описание актива</div>
+                            <div>
+                                <p>{{ asset.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 text-right">
+                        <div class="clf" style="margin-bottom:30px;">
+                            <dl class="row pull-right" style="width:450px;">
+                                <dt class="col-sm-6">Дата закупки</dt>
+                                <dd class="col-sm-6">{{ asset.year_of_purchase }}</dd>
+                                <dt class="col-sm-6">Дата регистрации</dt>
+                                <dd class="col-sm-6">{{ asset.created_at }}</dd>
+                                <dt class="col-sm-6">Дата обновления</dt>
+                                <dd class="col-sm-6">{{ asset.updated_at }}</dd>
+                            </dl>
+                        </div>
+                        <div>
+                            <div class="m-b-5 font-bold">Местоположение</div>
+                            <div>{{ asset.location.name }}</div>
+                            <ul class="list-unstyled m-t-10">
+                                <li class="m-b-5">г. {{ asset.location.city }}</li>
+                                <li class="m-b-5">{{ asset.location.address }}</li>
+                                <li>{{ asset.location.phone }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped no-margin table-invoice">
+                <tbody>
+                <tr>
+                    <td>Стасус</td>
+                    <td>{{ asset.status }}</td>
+                </tr>
+                <tr>
+                    <td>Состояние</td>
+                    <td>{{ asset.state }}</td>
+                </tr>
+                <tr>
+                    <td>Стоимость</td>
+                    <td>{{ asset.price }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="text-right mt-5">
+                <button class="btn btn-info" type="button" onclick="javascript:window.print();">
+                    Сохранить актив
+                </button>
+            </div>
+        </div>
+        <style>
+            .invoice {
+                padding: 20px
+            }
+            .invoice-header {
+                margin-bottom: 50px
+            }
+            .table-invoice tr td:last-child {
+                text-align: right;
+            }
+        </style>
+    </div>
+{% endblock %}
