@@ -148,7 +148,7 @@ class LocationDetail(DetailView):
     """ Детальное представление локаций
     """
     model = Location
-    # template_name = 'web/location_detail.html'
+    template_name = 'web/location_detail.html'
     context_object_name = 'location'
 
     def get_context_data(self, *, object_list=None, **kwargs):
