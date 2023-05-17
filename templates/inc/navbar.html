@@ -8,18 +8,21 @@
         </div>
         <ul class="side-menu metismenu">
             <li>
-                <a class="active" href="index.html"><i class="sidebar-item-icon fa fa-th-large"></i>
+                <a class="active" href="index.html">
+                    <i class="sidebar-item-icon fa fa-th-large"></i>
                     <span class="nav-label">Дашборд</span>
                 </a>
             </li>
             <li class="heading">Страницы</li>
             <li>
-                <a href="javascript:;"><i class="sidebar-item-icon fa fa-bookmark"></i>
+                <a href="{% url 'assets' %}">
+                    <i class="sidebar-item-icon fa fa-bookmark"></i>
                     <span class="nav-label">Активы</span>
                 </a>
             </li>
             <li>
-                <a href="javascript:;"><i class="sidebar-item-icon fa fa-map"></i>
+                <a href="{% url 'locations' %}">
+                    <i class="sidebar-item-icon fa fa-map"></i>
                     <span class="nav-label">Склады</span>
                 </a>
             </li>
