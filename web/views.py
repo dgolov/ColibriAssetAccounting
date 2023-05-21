@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
@@ -8,6 +8,7 @@ from django.views.generic import DetailView, ListView, CreateView, DeleteView, U
 from django.http import HttpResponseRedirect
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
+from web.mixins import UserMixin
 
 
 class Auth(View):
@@ -48,7 +49,18 @@ class Auth(View):
         return render(self.request, 'web/login.html', context)
 
 
-class AssetList(ListView):
+class LogOut(View):
+    def get(self, *args, **kwargs):
+        auth_form = forms.AuthForm
+        context = {
+            'title': "Вход",
+            'form': auth_form
+        }
+        logout(self.request)
+        return render(self.request, 'web/login.html', context)
+
+
+class AssetList(UserMixin, ListView):
     """ Представление главной страницы (список активов)
     """
     model = Asset
@@ -65,7 +77,7 @@ class AssetList(ListView):
         return Asset.objects.filter(is_active=True).order_by('name')
 
 
-class AssetDetail(DetailView):
+class AssetDetail(UserMixin, DetailView):
     """ Детальное представление актива
     """
     model = Asset
@@ -78,7 +90,7 @@ class AssetDetail(DetailView):
         return context
 
 
-class CreateAssert(CreateView):
+class CreateAssert(UserMixin, CreateView):
     """ Создание нового актива
     """
     # template_name = 'web/create_asset.html'
@@ -98,7 +110,7 @@ class CreateAssert(CreateView):
         return HttpResponseRedirect('/')
 
 
-class CreateAssertImage(CreateView):
+class CreateAssertImage(UserMixin, CreateView):
     """ Загрузка изображения актива актива
     """
     # template_name = 'web/create_asset_image.html'
@@ -118,7 +130,7 @@ class CreateAssertImage(CreateView):
         return HttpResponseRedirect('/')
 
 
-class DeleteAssertImage(DeleteView):
+class DeleteAssertImage(UserMixin, DeleteView):
     model = AssetImage
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -132,7 +144,7 @@ class DeleteAssertImage(DeleteView):
         # return f'/assets/{self.get_object().pk}'
 
 
-class UpdateAsset(UpdateView):
+class UpdateAsset(UserMixin, UpdateView):
     """ Обновление актива
     """
     model = Asset
@@ -151,7 +163,7 @@ class UpdateAsset(UpdateView):
         super(UpdateAsset, self).put(*args, **kwargs)
 
 
-class DeleteAssert(DeleteView):
+class DeleteAssert(UserMixin, DeleteView):
     """ Удаление актива
     """
     model = Asset
@@ -164,7 +176,7 @@ class DeleteAssert(DeleteView):
         return context
 
 
-class LocationList(ListView):
+class LocationList(UserMixin, ListView):
     """ Список локаций
     """
     model = Location
@@ -178,7 +190,7 @@ class LocationList(ListView):
         return context
 
 
-class LocationDetail(DetailView):
+class LocationDetail(UserMixin, DetailView):
     """ Детальное представление локаций
     """
     model = Location
@@ -191,7 +203,7 @@ class LocationDetail(DetailView):
         return context
 
 
-class CreateLocation(CreateView):
+class CreateLocation(UserMixin, CreateView):
     """ Создание местоположения
     """
     # template_name = 'web/create_location.html'
@@ -203,7 +215,7 @@ class CreateLocation(CreateView):
         return context
 
 
-class UpdateLocation(UpdateView):
+class UpdateLocation(UserMixin, UpdateView):
     """ Обновление местоположения
     """
     # template_name = 'web/update_location.html'
@@ -219,7 +231,7 @@ class UpdateLocation(UpdateView):
         return f'/locations/{self.get_object().pk}'
 
 
-class DeleteLocation(DeleteView):
+class DeleteLocation(UserMixin, DeleteView):
     """ Удаление местоположения
     """
     model = Location
@@ -232,7 +244,7 @@ class DeleteLocation(DeleteView):
         return context
 
 
-class OrderList(ListView):
+class OrderList(UserMixin, ListView):
     """ Список отчетов
     """
     model = Order
@@ -246,7 +258,7 @@ class OrderList(ListView):
         return context
 
 
-class CreateOrder(CreateView):
+class CreateOrder(UserMixin, CreateView):
     """ Формировпние и загрузка отчета
     """
     # template_name = 'web/create_order.html'
