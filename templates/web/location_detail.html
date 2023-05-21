@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-heading">
+        <div class="row">
+            <div class="col-md-8">
+                <h1 class="page-title">{{ location.name }}</h1>
+            </div>
+            <div class="col-md-2">
+                <a type="button" href=""
+                   class="btn btn-outline-primary px-5 mt-5" style="float: right;">
+                    Редактировать
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a type="button" href=""
+                   class="btn btn-outline-danger px-5 mt-5" style="float: right;">
+                    Удалить склад
+                </a>
+            </div>
+        </div>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Главная</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'locations' %}">Склады</a>
+            </li>
+            <li class="breadcrumb-item">{{ location.name }}</li>
+        </ol>
+    </div>
+    <div class="page-content fade-in-up">
+        <div class="ibox invoice">
+            <div class="invoice-header">
+                <div class="row">
+                    <div class="col-6">
+                        <div>
+                            <div class="m-b-5 font-bold">Описание склада</div>
+                            <div>
+                                <p>{{ location.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped no-margin table-invoice">
+                <tbody>
+                <tr>
+                    <td>Город</td>
+                    <td>{{ location.city }}</td>
+                </tr>
+                <tr>
+                    <td>Адрес</td>
+                    <td>{{ location.address }}</td>
+                </tr>
+                <tr>
+                    <td>Телефон</td>
+                    <td>{{ location.phone }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <style>
+            .invoice {
+                padding: 20px
+            }
+            .invoice-header {
+                margin-bottom: 50px
+            }
+            .table-invoice tr td:last-child {
+                text-align: right;
+            }
+        </style>
+    </div>
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <h1 class="page-title">Активы склада</h1>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
+                           width="100%">
+                        <thead>
+                        <tr>
+                            <th>Наименование</th>
+                            <th>Местоположение</th>
+                            <th>Стоимость</th>
+                            <th>Дата обновления</th>
+                            <th>Статус</th>
+                            <th>Состояние</th>
+                        </tr>
+                        </thead>
+                        {% if location.assets.all|length > 15 %}
+                            <tfoot>
+                            <tr>
+                                <th>Наименование</th>
+                                <th>Местоположение</th>
+                                <th>Стоимость</th>
+                                <th>Дата обновления</th>
+                                <th>Статус</th>
+                                <th>Состояние</th>
+                            </tr>
+                            </tfoot>
+                        {% endif %}
+                        <tbody>
+                        {% for asset in location.assets.all %}
+                            <tr>
+                                <td>
+                                    <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
+                                </td>
+                                <td>{{ asset.location.name }}</td>
+                                <td>{{ asset.price }}</td>
+                                <td>{{ asset.year_of_purchase.year }}</td>
+                                <td>{{ asset.status }}</td>
+                                <td>{{ asset.state }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

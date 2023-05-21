@@ -1,10 +1,17 @@
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
+
+
+class Auth(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'web/login.html', {})
 
 
 class AssetList(ListView):
@@ -127,7 +134,7 @@ class LocationList(ListView):
     """ Список локаций
     """
     model = Location
-    # template_name = 'web/locations.html'
+    template_name = 'web/locations.html'
     context_object_name = 'locations'
     paginate_by = 30
 
@@ -141,7 +148,7 @@ class LocationDetail(DetailView):
     """ Детальное представление локаций
     """
     model = Location
-    # template_name = 'web/location_detail.html'
+    template_name = 'web/location_detail.html'
     context_object_name = 'location'
 
     def get_context_data(self, *, object_list=None, **kwargs):
