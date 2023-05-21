@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
@@ -10,8 +11,41 @@ from web import forms
 
 
 class Auth(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, 'web/login.html', {})
+    def get(self, *args, **kwargs):
+        auth_form = forms.AuthForm
+        context = {
+            'title': "Вход",
+            'form': auth_form
+        }
+        return render(self.request, 'web/login.html', context)
+
+    def post(self, request, *args, **kwargs):
+        auth_form = forms.AuthForm(self.request.POST)
+        if auth_form.is_valid():
+            username = auth_form.cleaned_data['username']
+            password = auth_form.cleaned_data['password']
+            # try:
+            #     user = User.objects.get(username=username)
+            # except User.DoesNotExist:
+            #     pass
+            # try:
+            #     user = User.objects.get(email=username)
+            # except User.DoesNotExist:
+            #     pass
+            user = authenticate(username=username, password=password)
+            if user:
+                if user.is_active:
+                    login(self.request, user)
+                    return HttpResponseRedirect('/')
+                else:
+                    auth_form.add_error('__all__', 'Ошибка! Учетная запись пользователя не активна')
+            else:
+                auth_form.add_error('__all__', 'Ошибка! Проверьте правильность ввода данных')
+        context = {
+            'title': "Вход",
+            'form': auth_form
+        }
+        return render(self.request, 'web/login.html', context)
 
 
 class AssetList(ListView):
