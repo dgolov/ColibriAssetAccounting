@@ -3,6 +3,23 @@ from django.contrib.admin.widgets import AdminDateWidget
 from web.models import Asset, AssetImage, Location, Order, History
 
 
+class AuthForm(forms.Form):
+    """ Форма входа пользователя
+    """
+    username = forms.CharField(
+        label='Логин',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Логин'}
+        )
+    )
+    password = forms.CharField(
+        label='Пароль',
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control', 'placeholder': 'Пароль'}
+        )
+    )
+
+
 class CreateAssetForm(forms.ModelForm):
     """ Форма регистрации нового актива
     """
