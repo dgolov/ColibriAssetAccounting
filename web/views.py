@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -48,9 +49,10 @@ class Auth(View):
         return render(self.request, 'web/login.html', context)
 
 
-class AssetList(ListView):
+class AssetList(LoginRequiredMixin, ListView):
     """ Представление главной страницы (список активов)
     """
+    login_url = '/auth'
     model = Asset
     template_name = 'web/index.html'
     context_object_name = 'assets'
@@ -65,9 +67,10 @@ class AssetList(ListView):
         return Asset.objects.filter(is_active=True).order_by('name')
 
 
-class AssetDetail(DetailView):
+class AssetDetail(LoginRequiredMixin, DetailView):
     """ Детальное представление актива
     """
+    login_url = '/auth'
     model = Asset
     template_name = 'web/asset_detail.html'
     context_object_name = 'asset'
@@ -78,9 +81,10 @@ class AssetDetail(DetailView):
         return context
 
 
-class CreateAssert(CreateView):
+class CreateAssert(LoginRequiredMixin, CreateView):
     """ Создание нового актива
     """
+    login_url = '/auth'
     # template_name = 'web/create_asset.html'
     form_class = forms.CreateAssetForm
 
@@ -98,9 +102,10 @@ class CreateAssert(CreateView):
         return HttpResponseRedirect('/')
 
 
-class CreateAssertImage(CreateView):
+class CreateAssertImage(LoginRequiredMixin, CreateView):
     """ Загрузка изображения актива актива
     """
+    login_url = '/auth'
     # template_name = 'web/create_asset_image.html'
     # form_class = forms.CreateAssetForm
 
@@ -118,7 +123,8 @@ class CreateAssertImage(CreateView):
         return HttpResponseRedirect('/')
 
 
-class DeleteAssertImage(DeleteView):
+class DeleteAssertImage(LoginRequiredMixin, DeleteView):
+    login_url = '/auth'
     model = AssetImage
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -132,9 +138,10 @@ class DeleteAssertImage(DeleteView):
         # return f'/assets/{self.get_object().pk}'
 
 
-class UpdateAsset(UpdateView):
+class UpdateAsset(LoginRequiredMixin, UpdateView):
     """ Обновление актива
     """
+    login_url = '/auth'
     model = Asset
     # template_name = 'web/update_asset.html'
     form_class = forms.UpdateAssetForm
@@ -151,9 +158,10 @@ class UpdateAsset(UpdateView):
         super(UpdateAsset, self).put(*args, **kwargs)
 
 
-class DeleteAssert(DeleteView):
+class DeleteAssert(LoginRequiredMixin, DeleteView):
     """ Удаление актива
     """
+    login_url = '/auth'
     model = Asset
     # template_name = 'web/delete_asset.html'
     success_url = reverse_lazy('main')
@@ -164,9 +172,10 @@ class DeleteAssert(DeleteView):
         return context
 
 
-class LocationList(ListView):
+class LocationList(LoginRequiredMixin, ListView):
     """ Список локаций
     """
+    login_url = '/auth'
     model = Location
     template_name = 'web/locations.html'
     context_object_name = 'locations'
@@ -178,9 +187,10 @@ class LocationList(ListView):
         return context
 
 
-class LocationDetail(DetailView):
+class LocationDetail(LoginRequiredMixin, DetailView):
     """ Детальное представление локаций
     """
+    login_url = '/auth'
     model = Location
     template_name = 'web/location_detail.html'
     context_object_name = 'location'
@@ -191,9 +201,10 @@ class LocationDetail(DetailView):
         return context
 
 
-class CreateLocation(CreateView):
+class CreateLocation(LoginRequiredMixin, CreateView):
     """ Создание местоположения
     """
+    login_url = '/auth'
     # template_name = 'web/create_location.html'
     form_class = forms.LocationForm
 
@@ -203,9 +214,10 @@ class CreateLocation(CreateView):
         return context
 
 
-class UpdateLocation(UpdateView):
+class UpdateLocation(LoginRequiredMixin, UpdateView):
     """ Обновление местоположения
     """
+    login_url = '/auth'
     # template_name = 'web/update_location.html'
     model = Location
     form_class = forms.LocationForm
@@ -219,9 +231,10 @@ class UpdateLocation(UpdateView):
         return f'/locations/{self.get_object().pk}'
 
 
-class DeleteLocation(DeleteView):
+class DeleteLocation(LoginRequiredMixin, DeleteView):
     """ Удаление местоположения
     """
+    login_url = '/auth'
     model = Location
     # template_name = 'web/delete_location.html'
     success_url = reverse_lazy('locations')
@@ -232,9 +245,10 @@ class DeleteLocation(DeleteView):
         return context
 
 
-class OrderList(ListView):
+class OrderList(LoginRequiredMixin, ListView):
     """ Список отчетов
     """
+    login_url = '/auth'
     model = Order
     # template_name = 'web/orders.html'
     context_object_name = 'orders'
@@ -246,9 +260,10 @@ class OrderList(ListView):
         return context
 
 
-class CreateOrder(CreateView):
+class CreateOrder(LoginRequiredMixin, CreateView):
     """ Формировпние и загрузка отчета
     """
+    login_url = '/auth'
     # template_name = 'web/create_order.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
