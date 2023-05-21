@@ -29,7 +29,9 @@
                     <a class="dropdown-item" href="profile.html"><i class="fa fa-cog"></i>Настройки</a>
                     <a class="dropdown-item" href="javascript:;"><i class="fa fa-support"></i>О программе</a>
                     <li class="dropdown-divider"></li>
-                    <a class="dropdown-item" href="login.html"><i class="fa fa-power-off"></i>Выход</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}">
+                        <i class="fa fa-power-off"></i>Выход
+                    </a>
                 </ul>
             </li>
         </ul>
