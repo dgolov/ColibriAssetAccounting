@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
@@ -46,6 +46,17 @@ class Auth(View):
             'title': "Вход",
             'form': auth_form
         }
+        return render(self.request, 'web/login.html', context)
+
+
+class LogOut(View):
+    def get(self, *args, **kwargs):
+        auth_form = forms.AuthForm
+        context = {
+            'title': "Вход",
+            'form': auth_form
+        }
+        logout(self.request)
         return render(self.request, 'web/login.html', context)
 
 
