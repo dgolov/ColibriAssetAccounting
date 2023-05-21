@@ -25,14 +25,11 @@ class Auth(View):
         if auth_form.is_valid():
             username = auth_form.cleaned_data['username']
             password = auth_form.cleaned_data['password']
-            # try:
-            #     user = User.objects.get(username=username)
-            # except User.DoesNotExist:
-            #     pass
-            # try:
-            #     user = User.objects.get(email=username)
-            # except User.DoesNotExist:
-            #     pass
+            try:
+                user = User.objects.get(email=username)
+                username = user.username
+            except User.DoesNotExist:
+                pass
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
