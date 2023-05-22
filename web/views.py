@@ -25,14 +25,11 @@ class Auth(View):
         if auth_form.is_valid():
             username = auth_form.cleaned_data['username']
             password = auth_form.cleaned_data['password']
-            # try:
-            #     user = User.objects.get(username=username)
-            # except User.DoesNotExist:
-            #     pass
-            # try:
-            #     user = User.objects.get(email=username)
-            # except User.DoesNotExist:
-            #     pass
+            try:
+                user = User.objects.get(email=username)
+                username = user.username
+            except User.DoesNotExist:
+                pass
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
@@ -86,19 +83,21 @@ class AssetDetail(UserMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetDetail, self).get_context_data()
-        context['title'] = 'Asset'
+        context['title'] = f"Актив {self.get_object().name}"
         return context
 
 
 class CreateAssert(UserMixin, CreateView):
     """ Создание нового актива
     """
-    # template_name = 'web/create_asset.html'
+    template_name = 'web/create_asset.html'
     form_class = forms.CreateAssetForm
+    success_url = reverse_lazy('assets')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssert, self).get_context_data()
-        context['title'] = 'Create asset'
+        context['title'] = 'Создание актива'
+        context['form'] = forms.CreateAssetForm
         return context
 
     def form_valid(self, form):
@@ -148,12 +147,29 @@ class UpdateAsset(UserMixin, UpdateView):
     """ Обновление актива
     """
     model = Asset
-    # template_name = 'web/update_asset.html'
+    template_name = 'web/update_asset.html'
     form_class = forms.UpdateAssetForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateAsset, self).get_context_data()
-        context['title'] = 'Update asset'
+        try:
+            asset = Asset.objects.get(pk=self.get_object().pk)
+            context['asset'] = asset
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Обновление актива {asset.name}'
+        context['form'] = forms.UpdateAssetForm(
+            initial={
+                'name': asset.name,
+                'location': asset.location,
+                'year_of_purchase': asset.year_of_purchase,
+                'price': asset.price,
+                'state': asset.state,
+                'status': asset.status,
+                'is_active': asset.is_active,
+                'description': asset.description,
+            }
+        )
         return context
 
     def get_success_url(self):
@@ -199,32 +215,48 @@ class LocationDetail(UserMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationDetail, self).get_context_data()
-        context['title'] = 'location Detail'
+        context['title'] = f"Склад {self.get_object().name}"
         return context
 
 
 class CreateLocation(UserMixin, CreateView):
     """ Создание местоположения
     """
-    # template_name = 'web/create_location.html'
+    template_name = 'web/create_location.html'
     form_class = forms.LocationForm
+    success_url = reverse_lazy('locations')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateLocation, self).get_context_data()
-        context['title'] = 'Create location'
+        context['title'] = 'Создание склада'
+        context['form'] = forms.LocationForm
         return context
 
 
 class UpdateLocation(UserMixin, UpdateView):
     """ Обновление местоположения
     """
-    # template_name = 'web/update_location.html'
+    template_name = 'web/update_location.html'
     model = Location
     form_class = forms.LocationForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateLocation, self).get_context_data()
-        context['title'] = 'Update location'
+        try:
+            location = Location.objects.get(pk=self.get_object().pk)
+            context['location'] = location
+        except Location.DoesNotExist:
+            return {}
+        context['title'] = f'Обновление склада {location.name}'
+        context['form'] = forms.LocationForm(
+            initial={
+                'name': location.name,
+                'city': location.city,
+                'address': location.address,
+                'phone': location.phone,
+                'description': location.description,
+            }
+        )
         return context
 
     def get_success_url(self):
@@ -248,7 +280,7 @@ class OrderList(UserMixin, ListView):
     """ Список отчетов
     """
     model = Order
-    # template_name = 'web/orders.html'
+    template_name = 'web/orders.html'
     context_object_name = 'orders'
     paginate_by = 30
 

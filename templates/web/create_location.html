@@ -3,15 +3,15 @@
 {% block content %}
     <div class="page-content fade-in-up">
         <div class="page-heading">
-            <h1 class="page-title">Добавление нового актива</h1>
+            <h1 class="page-title">Добавление нового склада</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                     <a href="/">Главная</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="{% url 'assets' %}">Активы</a>
+                    <a href="{% url 'locations' %}">Склады</a>
                 </li>
-                <li class="breadcrumb-item">Добавление нового актива</li>
+                <li class="breadcrumb-item">Добавление нового склада</li>
             </ol>
         </div>
         <div class="page-content fade-in-up">
@@ -20,7 +20,7 @@
                     <form method="POST">
                         {{ form.as_p }}
                         {% csrf_token %}
-                        <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Добавить актив</button>
+                        <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Добавить склад</button>
                     </form>
                 </div>
             </div>
