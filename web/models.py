@@ -3,8 +3,8 @@ from django.db import models
 
 class Location(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
-    city = models.CharField(max_length=256, verbose_name='Город')
-    address = models.CharField(max_length=256, verbose_name='Адрес')
+    city = models.CharField(max_length=256, verbose_name='Город', blank=True, null=True)
+    address = models.CharField(max_length=256, verbose_name='Адрес', blank=True, null=True)
     phone = models.CharField(max_length=32, verbose_name="Номер телефона", blank=True, null=True)
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
 
