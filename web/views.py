@@ -67,7 +67,7 @@ class AssetList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
-        context['title'] = 'Main page'
+        context['title'] = 'Активы'
         return context
 
     def get_queryset(self):
@@ -117,7 +117,7 @@ class CreateAssertImage(UserMixin, CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssertImage, self).get_context_data()
-        context['title'] = 'Added asset image'
+        context['title'] = 'Добавление изображения к активу'
         return context
 
     def form_valid(self, form):
@@ -134,7 +134,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssertImage, self).get_context_data()
-        context['title'] = 'Delete asset image'
+        context['title'] = 'Удаление изображения актива'
         return context
 
     def get_success_url(self):
@@ -188,7 +188,7 @@ class DeleteAssert(UserMixin, DeleteView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssert, self).get_context_data()
-        context['title'] = 'Delete asset'
+        context['title'] = 'Удаление актива'
         return context
 
 
@@ -202,7 +202,7 @@ class LocationList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationList, self).get_context_data()
-        context['title'] = 'Locations'
+        context['title'] = 'Склады'
         return context
 
 
@@ -272,7 +272,7 @@ class DeleteLocation(UserMixin, DeleteView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteLocation, self).get_context_data()
-        context['title'] = 'Delete location'
+        context['title'] = 'Удаление склада'
         return context
 
 
@@ -286,7 +286,7 @@ class OrderList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(OrderList, self).get_context_data()
-        context['title'] = 'Orders'
+        context['title'] = 'Отчеты'
         return context
 
 
@@ -297,7 +297,7 @@ class CreateOrder(UserMixin, CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateOrder, self).get_context_data()
-        context['title'] = 'Create order'
+        context['title'] = 'Создание отчета'
         return context
 
     def post(self, request, *args, **kwargs):
