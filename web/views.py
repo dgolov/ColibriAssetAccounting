@@ -234,13 +234,27 @@ class CreateLocation(UserMixin, CreateView):
 class UpdateLocation(UserMixin, UpdateView):
     """ Обновление местоположения
     """
-    # template_name = 'web/update_location.html'
+    template_name = 'web/update_location.html'
     model = Location
     form_class = forms.LocationForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateLocation, self).get_context_data()
-        context['title'] = 'Update location'
+        try:
+            location = Location.objects.get(pk=self.get_object().pk)
+            context['location'] = location
+        except Location.DoesNotExist:
+            return {}
+        context['title'] = f'Обновление склада {location.name}'
+        context['form'] = forms.LocationForm(
+            initial={
+                'name': location.name,
+                'city': location.city,
+                'address': location.address,
+                'phone': location.phone,
+                'description': location.description,
+            }
+        )
         return context
 
     def get_success_url(self):
