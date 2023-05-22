@@ -147,12 +147,29 @@ class UpdateAsset(UserMixin, UpdateView):
     """ Обновление актива
     """
     model = Asset
-    # template_name = 'web/update_asset.html'
+    template_name = 'web/update_asset.html'
     form_class = forms.UpdateAssetForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateAsset, self).get_context_data()
-        context['title'] = 'Update asset'
+        try:
+            asset = Asset.objects.get(pk=self.get_object().pk)
+            context['asset'] = asset
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Обновление актива {asset.name}'
+        context['form'] = forms.UpdateAssetForm(
+            initial={
+                'name': asset.name,
+                'location': asset.location,
+                'year_of_purchase': asset.year_of_purchase,
+                'price': asset.price,
+                'state': asset.state,
+                'status': asset.status,
+                'is_active': asset.is_active,
+                'description': asset.description,
+            }
+        )
         return context
 
     def get_success_url(self):
