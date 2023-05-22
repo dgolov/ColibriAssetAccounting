@@ -25,42 +25,49 @@ class CreateAssetForm(forms.ModelForm):
     """
     name = forms.CharField(
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Введите номер договора...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите название актива'}
+        ),
+        label="Название"
     )
     description = forms.CharField(
         required=False,
         widget=forms.Textarea(
-            attrs={'class': 'form-control', 'placeholder': 'Введите комментарий менеджера...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите описание актива.'}
+        ),
+        label="Описание"
     )
     location = forms.ModelChoiceField(
         queryset=Location.objects.all(),
         widget=forms.Select(
             attrs={'class': 'form-control'}
-        )
+        ),
+        label="Склад"
     )
     year_of_purchase = forms.DateField(
         widget=AdminDateWidget(
             attrs={'class': 'form-control', 'type': "date"}
-        )
+        ),
+        label="Дата закупки"
     )
     price = forms.DecimalField(
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Введите комментарий менеджера...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите цену актива'}
+        ),
+        label="Стоимость"
     )
     status = forms.CharField(
         widget=forms.Select(
             choices=Asset.STATUS_CHOICES,
             attrs={'class': 'form-control'}
-        )
+        ),
+        label="Статсус"
     )
     state = forms.CharField(
         widget=forms.Select(
             choices=Asset.STATE_CHOICES,
             attrs={'class': 'form-control'}
-        )
+        ),
+        label="Состояние"
     )
 
     class Meta:
