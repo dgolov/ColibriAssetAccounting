@@ -90,12 +90,14 @@ class AssetDetail(UserMixin, DetailView):
 class CreateAssert(UserMixin, CreateView):
     """ Создание нового актива
     """
-    # template_name = 'web/create_asset.html'
+    template_name = 'web/create_asset.html'
     form_class = forms.CreateAssetForm
+    success_url = reverse_lazy('assets')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssert, self).get_context_data()
         context['title'] = 'Create asset'
+        context['form'] = forms.CreateAssetForm
         return context
 
     def form_valid(self, form):
@@ -245,7 +247,7 @@ class OrderList(UserMixin, ListView):
     """ Список отчетов
     """
     model = Order
-    # template_name = 'web/orders.html'
+    template_name = 'web/orders.html'
     context_object_name = 'orders'
     paginate_by = 30
 
