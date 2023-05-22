@@ -94,22 +94,41 @@ class LocationForm(forms.ModelForm):
     """
     name = forms.CharField(
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Введите номер договора...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите название склада'}
+        ),
+        label="Название"
     )
     city = forms.CharField(
+        required=False,
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Введите номер договора...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите город'}
+        ),
+        label="Город"
     )
     address = forms.CharField(
+        required=False,
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Введите номер договора...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите адресс склада'}
+        ),
+        label="Адресс"
+    )
+    phone = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Введите номер телефона склада'}
+        ),
+        label="Номер телефона"
     )
     description = forms.CharField(
         required=False,
         widget=forms.Textarea(
-            attrs={'class': 'form-control', 'placeholder': 'Введите комментарий менеджера...'}
-        )
+            attrs={'class': 'form-control', 'placeholder': 'Введите описание склада'}
+        ),
+        label="Описание",
     )
+
+    class Meta:
+        model = Location
+        fields = (
+            'name', 'city', 'address', 'phone', 'description'
+        )
