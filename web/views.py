@@ -228,7 +228,7 @@ class CreateLocation(UserMixin, CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateLocation, self).get_context_data()
-        context['title'] = 'Create location'
+        context['title'] = 'Создание склада'
         context['form'] = forms.LocationForm
         return context
 
