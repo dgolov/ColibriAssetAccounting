@@ -83,7 +83,7 @@ class AssetDetail(UserMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetDetail, self).get_context_data()
-        context['title'] = 'Asset'
+        context['title'] = f"Актив {self.get_object().name}"
         return context
 
 
@@ -215,7 +215,7 @@ class LocationDetail(UserMixin, DetailView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationDetail, self).get_context_data()
-        context['title'] = 'location Detail'
+        context['title'] = f"Склад {self.get_object().name}"
         return context
 
 
