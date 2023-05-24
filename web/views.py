@@ -183,12 +183,17 @@ class DeleteAssert(UserMixin, DeleteView):
     """ Удаление актива
     """
     model = Asset
-    # template_name = 'web/delete_asset.html'
-    success_url = reverse_lazy('main')
+    template_name = 'web/delete_asset.html'
+    success_url = reverse_lazy('assets')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssert, self).get_context_data()
-        context['title'] = 'Удаление актива'
+        try:
+            asset = Asset.objects.get(pk=self.get_object().pk)
+            context['asset'] = asset
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Удаление актива {asset.name}'
         return context
 
 
