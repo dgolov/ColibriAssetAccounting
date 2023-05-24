@@ -101,7 +101,8 @@ class CreateAssert(UserMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        asset = form.save()
+        History.objects.create(asset=asset, event_name="Создание актива")
         return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
