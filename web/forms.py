@@ -77,6 +77,28 @@ class CreateAssetForm(forms.ModelForm):
         )
 
 
+class CreateAssetImageForm(forms.ModelForm):
+    asset = forms.ModelChoiceField(
+        queryset=Asset.objects.all(),
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        ),
+        label="Актив"
+    )
+    image = forms.ImageField(
+        widget=forms.FileInput(
+            attrs={'class': 'form-control'}
+        ),
+        label="Изображение"
+    )
+
+    class Meta:
+        model = AssetImage
+        fields = (
+            'asset', 'image'
+        )
+
+
 class UpdateAssetForm(CreateAssetForm):
     """ Форма обновления актива
     """
