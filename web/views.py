@@ -113,12 +113,26 @@ class CreateAssert(UserMixin, CreateView):
 class CreateAssertImage(UserMixin, CreateView):
     """ Загрузка изображения актива актива
     """
-    # template_name = 'web/create_asset_image.html'
-    # form_class = forms.CreateAssetForm
+    template_name = 'web/create_asset_image.html'
+    form_class = forms.CreateAssetImageForm
+    _object_pk = None
+    
+    def get(self, request, *args, **kwargs):
+        self._object_pk = kwargs.get('pk')
+        return super(CreateAssertImage, self).get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssertImage, self).get_context_data()
-        context['title'] = 'Добавление изображения к активу'
+        try:
+            asset = Asset.objects.get(pk=self._object_pk)
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Добавление изображения к активу {asset.name}'
+        context['form'] = forms.CreateAssetImageForm(
+            initial={
+                'asset': asset
+            }
+        )
         return context
 
     def form_valid(self, form):
