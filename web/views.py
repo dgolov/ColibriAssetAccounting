@@ -273,12 +273,17 @@ class DeleteLocation(UserMixin, DeleteView):
     """ Удаление местоположения
     """
     model = Location
-    # template_name = 'web/delete_location.html'
+    template_name = 'web/delete_location.html'
     success_url = reverse_lazy('locations')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteLocation, self).get_context_data()
-        context['title'] = 'Удаление склада'
+        try:
+            location = Location.objects.get(pk=self.get_object().pk)
+            context['location'] = location
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Удаление склада {location.name}'
         return context
 
 
