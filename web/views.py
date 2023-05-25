@@ -67,7 +67,7 @@ class AssetList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
-        context['title'] = 'Main page'
+        context['title'] = 'Активы'
         return context
 
     def get_queryset(self):
@@ -101,7 +101,8 @@ class CreateAssert(UserMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        form.save()
+        asset = form.save()
+        History.objects.create(asset=asset, event_name="Создание актива")
         return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
@@ -112,12 +113,26 @@ class CreateAssert(UserMixin, CreateView):
 class CreateAssertImage(UserMixin, CreateView):
     """ Загрузка изображения актива актива
     """
-    # template_name = 'web/create_asset_image.html'
-    # form_class = forms.CreateAssetForm
+    template_name = 'web/create_asset_image.html'
+    form_class = forms.CreateAssetImageForm
+    _object_pk = None
+    
+    def get(self, request, *args, **kwargs):
+        self._object_pk = kwargs.get('pk')
+        return super(CreateAssertImage, self).get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssertImage, self).get_context_data()
-        context['title'] = 'Added asset image'
+        try:
+            asset = Asset.objects.get(pk=self._object_pk)
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Добавление изображения к активу {asset.name}'
+        context['form'] = forms.CreateAssetImageForm(
+            initial={
+                'asset': asset
+            }
+        )
         return context
 
     def form_valid(self, form):
@@ -134,7 +149,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssertImage, self).get_context_data()
-        context['title'] = 'Delete asset image'
+        context['title'] = 'Удаление изображения актива'
         return context
 
     def get_success_url(self):
@@ -183,12 +198,17 @@ class DeleteAssert(UserMixin, DeleteView):
     """ Удаление актива
     """
     model = Asset
-    # template_name = 'web/delete_asset.html'
-    success_url = reverse_lazy('main')
+    template_name = 'web/delete_asset.html'
+    success_url = reverse_lazy('assets')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssert, self).get_context_data()
-        context['title'] = 'Delete asset'
+        try:
+            asset = Asset.objects.get(pk=self.get_object().pk)
+            context['asset'] = asset
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Удаление актива {asset.name}'
         return context
 
 
@@ -202,7 +222,7 @@ class LocationList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationList, self).get_context_data()
-        context['title'] = 'Locations'
+        context['title'] = 'Склады'
         return context
 
 
@@ -267,12 +287,17 @@ class DeleteLocation(UserMixin, DeleteView):
     """ Удаление местоположения
     """
     model = Location
-    # template_name = 'web/delete_location.html'
+    template_name = 'web/delete_location.html'
     success_url = reverse_lazy('locations')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteLocation, self).get_context_data()
-        context['title'] = 'Delete location'
+        try:
+            location = Location.objects.get(pk=self.get_object().pk)
+            context['location'] = location
+        except Asset.DoesNotExist:
+            return {}
+        context['title'] = f'Удаление склада {location.name}'
         return context
 
 
@@ -286,7 +311,7 @@ class OrderList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(OrderList, self).get_context_data()
-        context['title'] = 'Orders'
+        context['title'] = 'Отчеты'
         return context
 
 
@@ -297,7 +322,7 @@ class CreateOrder(UserMixin, CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateOrder, self).get_context_data()
-        context['title'] = 'Create order'
+        context['title'] = 'Создание отчета'
         return context
 
     def post(self, request, *args, **kwargs):
