@@ -17,8 +17,8 @@ class AssetsAdmin(admin.ModelAdmin):
 
 @admin.register(AssetImage)
 class AssetImageAdmin(admin.ModelAdmin):
-    list_display = ['id', 'asset']
-    list_display_links = ['id', 'asset']
+    list_display = ['id', 'asset', 'title']
+    list_display_links = ['title', 'asset']
 
 
 @admin.register(Location)
