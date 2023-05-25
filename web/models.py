@@ -83,6 +83,12 @@ class History(models.Model):
 
     event_name = models.TextField(verbose_name='Наименование события')
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE, verbose_name="Актив", related_name="history")
+    old_name = models.CharField(
+        max_length=256, verbose_name='Старое название', choices=STATUS_CHOICES, blank=True, null=True
+    )
+    new_name = models.CharField(
+        max_length=256, verbose_name='Новое название', choices=STATUS_CHOICES, blank=True, null=True
+    )
     old_location = models.ForeignKey(
         Location,
         on_delete=models.CASCADE,
@@ -99,13 +105,21 @@ class History(models.Model):
         null=True,
         related_name='new_history'
     )
-    old_price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7, blank=True, null=True)
-    new_price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7, blank=True, null=True)
-    old_state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES, blank=True, null=True)
-    new_state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES, blank=True, null=True)
-    old_status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES, blank=True, null=True)
-    new_status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
+    old_price = models.DecimalField(
+        verbose_name="Старая стоимость", decimal_places=2, max_digits=7, blank=True, null=True
+    )
+    new_price = models.DecimalField(
+        verbose_name="Новая стоимость", decimal_places=2, max_digits=7, blank=True, null=True
+    )
+    old_state = models.IntegerField(verbose_name="Старое состояние", choices=STATE_CHOICES, blank=True, null=True)
+    new_state = models.IntegerField(verbose_name="Новое состояние", choices=STATE_CHOICES, blank=True, null=True)
+    old_status = models.CharField(
+        max_length=256, verbose_name='Старый татус', choices=STATUS_CHOICES, blank=True, null=True
+    )
+    new_status = models.CharField(
+        max_length=256, verbose_name='Новый статус', choices=STATUS_CHOICES, blank=True, null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания записи")
 
     def __str__(self):
         return f"{self.created_at} - {self.asset.name}"
