@@ -3,6 +3,11 @@ from typing import Union
 from web.models import Asset, History, Location
 from web.services import connect_to_redis
 
+import logging
+
+
+logger = logging.getLogger('main')
+
 
 class UserMixin(LoginRequiredMixin):
     login_url = '/auth'
@@ -12,23 +17,28 @@ class AssetMixin:
     try:
         r = connect_to_redis()
     except Exception as e:
-        print(e)
+        logger.error(f"[AssetMixin] Connect to redis error - {e}")
         r = None
 
     def save_old_asset_data(self, asset: Asset):
         if not self.r:
             return
+
         self.r.set(f'{asset.pk}_name', asset.name, 120)
         self.r.set(f'{asset.pk}_location', asset.location.pk, 120)
         self.r.set(f'{asset.pk}_price', f"{asset.price}", 120)
         self.r.set(f'{asset.pk}_state', f"{asset.state}", 120)
         self.r.set(f'{asset.pk}_status', f"{asset.status}", 120)
 
+        logger.info(f"[AssetMixin] Save redis data for asset if {asset.pk}")
+
     def get_old_asset_data(self, asset_id: int) -> Union[dict, None]:
         if not self.r:
             return None
         location_id = self.r.get(f'{asset_id}_location')
         location = Location.objects.get(pk=location_id)
+
+        logger.info(f"[AssetMixin] Get redis data for asset if {asset_id}")
 
         return {
             "name": self.r.get(f'{asset_id}_name').decode(),
@@ -44,6 +54,7 @@ class AssetMixin:
             return None
 
         if new_asset.name != old_asset.get('name'):
+            logger.debug(f"[AssetMixin] Create asset history for name field asset id - {new_asset.pk}")
             History.objects.create(
                 asset=new_asset,
                 old_name=old_asset.get('name'),
@@ -52,6 +63,7 @@ class AssetMixin:
             )
 
         if new_asset.location != old_asset.get('location'):
+            logger.debug(f"[AssetMixin] Create asset history for location field asset id - {new_asset.pk}")
             History.objects.create(
                 asset=new_asset,
                 old_location=old_asset.get('location'),
@@ -60,6 +72,7 @@ class AssetMixin:
             )
 
         if new_asset.price != old_asset.get('price'):
+            logger.debug(f"[AssetMixin] Create asset history for price field asset if - {new_asset.pk}")
             History.objects.create(
                 asset=new_asset,
                 old_price=old_asset.get('price'),
@@ -68,6 +81,7 @@ class AssetMixin:
             )
 
         if new_asset.state != old_asset.get('state'):
+            logger.debug(f"[AssetMixin] Create asset history for state field asset if - {new_asset.pk}")
             History.objects.create(
                 asset=new_asset,
                 old_state=old_asset.get('state'),
@@ -76,6 +90,7 @@ class AssetMixin:
             )
 
         if new_asset.status != old_asset.get('status'):
+            logger.debug(f"[AssetMixin] Create asset history for status field asset if - {new_asset.pk}")
             History.objects.create(
                 asset=new_asset,
                 old_status=old_asset.get('status'),
