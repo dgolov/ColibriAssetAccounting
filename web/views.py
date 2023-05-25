@@ -6,9 +6,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
+from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
-from web.mixins import UserMixin
+from web.mixins import UserMixin, AssetMixin
 
 
 class Auth(View):
@@ -163,7 +164,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
         # return f'/assets/{self.get_object().pk}'
 
 
-class UpdateAsset(UserMixin, UpdateView):
+class UpdateAsset(UserMixin, AssetMixin, UpdateView):
     """ Обновление актива
     """
     model = Asset
@@ -182,7 +183,7 @@ class UpdateAsset(UserMixin, UpdateView):
             initial={
                 'name': asset.name,
                 'location': asset.location,
-                'year_of_purchase': asset.year_of_purchase,
+                'year_of_purchase': asset.year_of_purchase.isoformat(),
                 'price': asset.price,
                 'state': asset.state,
                 'status': asset.status,
@@ -190,10 +191,19 @@ class UpdateAsset(UserMixin, UpdateView):
                 'description': asset.description,
             }
         )
+        try:
+            self.save_old_asset_data(asset=asset)
+        except ConnectionError as e:
+            print(e)
         return context
 
-    def get_success_url(self):
-        return f'/assets/{self.get_object().pk}'
+    def form_valid(self, form):
+        updated_asset = form.save()
+        try:
+            self.create_asset_history(new_asset=updated_asset)
+        except ConnectionError as e:
+            print(e)
+        return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def put(self, *args, **kwargs):
         super(UpdateAsset, self).put(*args, **kwargs)
