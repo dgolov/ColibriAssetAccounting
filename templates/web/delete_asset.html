@@ -12,7 +12,7 @@
                     <a href="{% url 'assets' %}">Активы</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/assets/{{ asset.pk }}"></a>
+                    <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
                 </li>
                 <li class="breadcrumb-item">Удаление актива {{ asset.name }}</li>
             </ol>
