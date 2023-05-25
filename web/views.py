@@ -121,6 +121,10 @@ class CreateAssertImage(UserMixin, CreateView):
         self._object_pk = kwargs.get('pk')
         return super(CreateAssertImage, self).get(request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        self._object_pk = kwargs.get('pk')
+        return super(CreateAssertImage, self).post(request, *args, **kwargs)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssertImage, self).get_context_data()
         try:
@@ -128,20 +132,21 @@ class CreateAssertImage(UserMixin, CreateView):
         except Asset.DoesNotExist:
             return {}
         context['title'] = f'Добавление изображения к активу {asset.name}'
+        context['asset'] = asset
         context['form'] = forms.CreateAssetImageForm(
             initial={
-                'asset': asset
+                'asset': asset.pk
             }
         )
         return context
 
     def form_valid(self, form):
         form.save()
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
     def form_invalid(self, form):
         messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
 
 class DeleteAssertImage(UserMixin, DeleteView):
