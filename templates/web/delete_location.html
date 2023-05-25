@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <h1 class="page-title">Удаление склада {{ location.name }}</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'locations' %}">Склады</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/locations/{{ locations.pk }}"></a>
+                </li>
+                <li class="breadcrumb-item">Удаление склада {{ location.name }}</li>
+            </ol>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <p class="mt-4">
+                        Склад <b>"{{ location.name }}"</b> будет удален безвозвратно. Пожалуйста подтвердите действие
+                        нажав кнопку ниже.
+                    </p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger btn-block mt-5 mb-3" type="submit">Удалить склад</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
