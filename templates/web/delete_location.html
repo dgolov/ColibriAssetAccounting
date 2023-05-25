@@ -12,7 +12,7 @@
                     <a href="{% url 'locations' %}">Склады</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="/locations/{{ locations.pk }}"></a>
+                    <a href="/locations/{{ locations.pk }}">{{ location.name }}</a>
                 </li>
                 <li class="breadcrumb-item">Удаление склада {{ location.name }}</li>
             </ol>
