@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <h1 class="page-title">Добавление изображения актива {{ asset.name }}</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'assets' %}">Активы</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
+                </li>
+                <li class="breadcrumb-item">Добавление изображения актива {{ asset.name }}</li>
+            </ol>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <form method="POST">
+                        {{ form.as_p }}
+                        {% csrf_token %}
+                        <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Добавить изображение</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
