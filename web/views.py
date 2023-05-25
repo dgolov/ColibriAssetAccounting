@@ -6,9 +6,16 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
+from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
-from web.mixins import UserMixin
+from web.mixins import UserMixin, AssetMixin
+
+
+import logging
+
+
+logger = logging.getLogger('main')
 
 
 class Auth(View):
@@ -28,16 +35,19 @@ class Auth(View):
             try:
                 user = User.objects.get(email=username)
                 username = user.username
-            except User.DoesNotExist:
-                pass
+            except User.DoesNotExist as e:
+                logger.error(f"[Auth POST] Get user {username} error - {e}")
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
+                    logger.debug(f'User login {username} success')
                     login(self.request, user)
                     return HttpResponseRedirect('/')
                 else:
+                    logger.debug(f'User login {username} is not active')
                     auth_form.add_error('__all__', 'Ошибка! Учетная запись пользователя не активна')
             else:
+                logger.debug(f'User login {username} failed')
                 auth_form.add_error('__all__', 'Ошибка! Проверьте правильность ввода данных')
         context = {
             'title': "Вход",
@@ -53,6 +63,7 @@ class LogOut(View):
             'title': "Вход",
             'form': auth_form
         }
+        logger.debug(f'User logout {self.request.user.username} success')
         logout(self.request)
         return render(self.request, 'web/login.html', context)
 
@@ -129,7 +140,8 @@ class CreateAssertImage(UserMixin, CreateView):
         context = super(CreateAssertImage, self).get_context_data()
         try:
             asset = Asset.objects.get(pk=self._object_pk)
-        except Asset.DoesNotExist:
+        except Asset.DoesNotExist as e:
+            logger.error(f"Create asset error - {e}")
             return {}
         context['title'] = f'Добавление изображения к активу {asset.name}'
         context['asset'] = asset
@@ -142,9 +154,11 @@ class CreateAssertImage(UserMixin, CreateView):
 
     def form_valid(self, form):
         form.save()
+        logger.debug(f"Upload asset image for asset id {self._object_pk} successfully")
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
     def form_invalid(self, form):
+        logger.debug(f"Upload asset image for asset id {self._object_pk} error")
         messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
@@ -163,7 +177,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
         # return f'/assets/{self.get_object().pk}'
 
 
-class UpdateAsset(UserMixin, UpdateView):
+class UpdateAsset(UserMixin, AssetMixin, UpdateView):
     """ Обновление актива
     """
     model = Asset
@@ -175,14 +189,15 @@ class UpdateAsset(UserMixin, UpdateView):
         try:
             asset = Asset.objects.get(pk=self.get_object().pk)
             context['asset'] = asset
-        except Asset.DoesNotExist:
+        except Asset.DoesNotExist as e:
+            logger.error(f"[UpdateAsset GET] Update asset error - {e}")
             return {}
         context['title'] = f'Обновление актива {asset.name}'
         context['form'] = forms.UpdateAssetForm(
             initial={
                 'name': asset.name,
                 'location': asset.location,
-                'year_of_purchase': asset.year_of_purchase,
+                'year_of_purchase': asset.year_of_purchase.isoformat(),
                 'price': asset.price,
                 'state': asset.state,
                 'status': asset.status,
@@ -190,10 +205,19 @@ class UpdateAsset(UserMixin, UpdateView):
                 'description': asset.description,
             }
         )
+        try:
+            self.save_old_asset_data(asset=asset)
+        except ConnectionError as e:
+            logger.error(f"[UpdateAsset GET] Redis connection error - {e}")
         return context
 
-    def get_success_url(self):
-        return f'/assets/{self.get_object().pk}'
+    def form_valid(self, form):
+        updated_asset = form.save()
+        try:
+            self.create_asset_history(new_asset=updated_asset)
+        except ConnectionError as e:
+            logger.error(f"[UpdateAsset POST] Redis connection error - {e}")
+        return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def put(self, *args, **kwargs):
         super(UpdateAsset, self).put(*args, **kwargs)
@@ -211,7 +235,8 @@ class DeleteAssert(UserMixin, DeleteView):
         try:
             asset = Asset.objects.get(pk=self.get_object().pk)
             context['asset'] = asset
-        except Asset.DoesNotExist:
+        except Asset.DoesNotExist as e:
+            logger.error(f"[DeleteAssert GET] Delete asset error - {e}")
             return {}
         context['title'] = f'Удаление актива {asset.name}'
         return context
@@ -270,7 +295,8 @@ class UpdateLocation(UserMixin, UpdateView):
         try:
             location = Location.objects.get(pk=self.get_object().pk)
             context['location'] = location
-        except Location.DoesNotExist:
+        except Location.DoesNotExist as e:
+            logger.error(f"[UpdateLocation GET] Update location error - {e}")
             return {}
         context['title'] = f'Обновление склада {location.name}'
         context['form'] = forms.LocationForm(
@@ -300,7 +326,8 @@ class DeleteLocation(UserMixin, DeleteView):
         try:
             location = Location.objects.get(pk=self.get_object().pk)
             context['location'] = location
-        except Asset.DoesNotExist:
+        except Asset.DoesNotExist as e:
+            logger.error(f"[DeleteLocation GET] Delete location error - {e}")
             return {}
         context['title'] = f'Удаление склада {location.name}'
         return context
