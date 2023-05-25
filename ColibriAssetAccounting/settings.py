@@ -121,3 +121,38 @@ LOGOUT_REDIRECT_URL = "/"
 REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = int(os.environ.get('REDIS_PORT'))
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+
+
+# Logging settings
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s - %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s - %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': 'app.log'
+        }
+    },
+    'loggers': {
+        'main': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file']
+        }
+    }
+}
