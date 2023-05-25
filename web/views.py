@@ -35,8 +35,8 @@ class Auth(View):
             try:
                 user = User.objects.get(email=username)
                 username = user.username
-            except User.DoesNotExist:
-                pass
+            except User.DoesNotExist as e:
+                logger.error(f"[Auth POST] Get user {username} error - {e}")
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
@@ -190,7 +190,7 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
             asset = Asset.objects.get(pk=self.get_object().pk)
             context['asset'] = asset
         except Asset.DoesNotExist as e:
-            logger.error(f"[GET] Update asset error - {e}")
+            logger.error(f"[UpdateAsset GET] Update asset error - {e}")
             return {}
         context['title'] = f'Обновление актива {asset.name}'
         context['form'] = forms.UpdateAssetForm(
@@ -208,7 +208,7 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
         try:
             self.save_old_asset_data(asset=asset)
         except ConnectionError as e:
-            logger.error(f"[GET] Redis connection error - {e}")
+            logger.error(f"[UpdateAsset GET] Redis connection error - {e}")
         return context
 
     def form_valid(self, form):
@@ -216,7 +216,7 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
         try:
             self.create_asset_history(new_asset=updated_asset)
         except ConnectionError as e:
-            logger.error(f"Redis connection error - {e}")
+            logger.error(f"[UpdateAsset POST] Redis connection error - {e}")
         return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def put(self, *args, **kwargs):
@@ -236,7 +236,7 @@ class DeleteAssert(UserMixin, DeleteView):
             asset = Asset.objects.get(pk=self.get_object().pk)
             context['asset'] = asset
         except Asset.DoesNotExist as e:
-            logger.error(f"Delete asset error - {e}")
+            logger.error(f"[DeleteAssert GET] Delete asset error - {e}")
             return {}
         context['title'] = f'Удаление актива {asset.name}'
         return context
@@ -296,7 +296,7 @@ class UpdateLocation(UserMixin, UpdateView):
             location = Location.objects.get(pk=self.get_object().pk)
             context['location'] = location
         except Location.DoesNotExist as e:
-            logger.error(f"Update location error - {e}")
+            logger.error(f"[UpdateLocation GET] Update location error - {e}")
             return {}
         context['title'] = f'Обновление склада {location.name}'
         context['form'] = forms.LocationForm(
@@ -327,7 +327,7 @@ class DeleteLocation(UserMixin, DeleteView):
             location = Location.objects.get(pk=self.get_object().pk)
             context['location'] = location
         except Asset.DoesNotExist as e:
-            logger.error(f"Delete location error - {e}")
+            logger.error(f"[DeleteLocation GET] Delete location error - {e}")
             return {}
         context['title'] = f'Удаление склада {location.name}'
         return context
