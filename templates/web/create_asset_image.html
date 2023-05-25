@@ -20,7 +20,7 @@
         <div class="page-content fade-in-up">
             <div class="ibox">
                 <div class="ibox-body">
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {{ form.as_p }}
                         {% csrf_token %}
                         <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Добавить изображение</button>
