@@ -49,11 +49,13 @@ class Asset(models.Model):
 
 
 class AssetImage(models.Model):
+    title = models.CharField(max_length=256, verbose_name='Описание', blank=True, null=True)
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE, verbose_name="Актив", related_name="images")
-    image = models.ImageField(upload_to="images", verbose_name="Изображенеие")
+    image = models.ImageField(upload_to="images/assets/", verbose_name="Изображенеие")
+    # created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время загрузки")
 
     def __str__(self):
-        return self.asset.name
+        return f"{self.asset.name}" if not self.title else f"{self.asset.name} - {self.title}"
 
     class Meta:
         verbose_name = "Изображение"
