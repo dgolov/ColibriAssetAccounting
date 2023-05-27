@@ -71,11 +71,11 @@
                 <tbody>
                 <tr>
                     <td>Стасус</td>
-                    <td>{{ asset.status }}</td>
+                    <td>{{ asset.get_status_display }}</td>
                 </tr>
                 <tr>
                     <td>Состояние</td>
-                    <td>{{ asset.state }}</td>
+                    <td>{{ asset.get_state_display }}</td>
                 </tr>
                 <tr>
                     <td>Стоимость</td>
@@ -83,22 +83,43 @@
                 </tr>
                 </tbody>
             </table>
-            <div class="text-right mt-5">
-                <button class="btn btn-info" type="button" onclick="javascript:window.print();">
-                    Сохранить актив
-                </button>
+            <div id="carouselExampleControls" class="carousel slide mt-5" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for photo in asset.images.all %}
+                        {% if photo == asset.images.all|first %}
+                            <div class="carousel-item active">
+                        {% else %}
+                            <div class="carousel-item">
+                        {% endif %}
+                    <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.title }}">
+                    </div>
+                    {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-target="#carouselExampleControls"
+                            data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Предыдущий</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-target="#carouselExampleControls"
+                            data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Следующий</span>
+                    </button>
+                </div>
             </div>
+            <style>
+                .invoice {
+                    padding: 20px
+                }
+
+                .invoice-header {
+                    margin-bottom: 50px
+                }
+
+                .table-invoice tr td:last-child {
+                    text-align: right;
+                }
+            </style>
         </div>
-        <style>
-            .invoice {
-                padding: 20px
-            }
-            .invoice-header {
-                margin-bottom: 50px
-            }
-            .table-invoice tr td:last-child {
-                text-align: right;
-            }
-        </style>
     </div>
 {% endblock %}
