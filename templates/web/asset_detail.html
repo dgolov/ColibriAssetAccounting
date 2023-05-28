@@ -83,7 +83,8 @@
                 </tr>
                 </tbody>
             </table>
-            <div id="carouselExampleControls" class="carousel slide mt-5" data-ride="carousel">
+            {% if asset.images.all|length > 0 %}
+                <div id="carouselExampleControls" class="carousel slide mt-5" data-ride="carousel">
                 <div class="carousel-inner">
                     {% for photo in asset.images.all %}
                         {% if photo == asset.images.all|first %}
@@ -107,7 +108,8 @@
                     </button>
                 </div>
             </div>
-            {% if asset.history %}
+            {% endif %}
+            {% if asset.history.all|length > 0 %}
                 <h2 class="mb-4 mt-4">История актива</h2>
                 <table class="table table-striped no-margin table-invoice mb-5">
                     <tbody>
