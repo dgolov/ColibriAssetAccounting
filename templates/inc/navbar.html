@@ -3,12 +3,12 @@
     <div id="sidebar-collapse">
         <div class="admin-block d-flex">
             <div class="admin-info">
-                <div class="font-strong">James Brown</div>
-                <small>Administrator</small></div>
+                <div class="font-strong">{{ user.get_full_name }}</div>
+            </div>
         </div>
         <ul class="side-menu metismenu">
             <li>
-                <a class="active" href="index.html">
+                <a class="active" href="{% url 'assets' %}">
                     <i class="sidebar-item-icon fa fa-th-large"></i>
                     <span class="nav-label">Дашборд</span>
                 </a>
@@ -32,6 +32,14 @@
                     <span class="nav-label">Отчеты</span>
                 </a>
             </li>
+            {% if user.is_superuser %}
+                <li>
+                    <a href="/admin">
+                        <i class="sidebar-item-icon fa fa-server"></i>
+                        <span class="nav-label">Админка</span>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
