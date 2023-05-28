@@ -107,6 +107,36 @@
                     </button>
                 </div>
             </div>
+            {% if asset.history %}
+                <h2 class="mb-4 mt-4">История актива</h2>
+                <table class="table table-striped no-margin table-invoice mb-5">
+                    <tbody>
+                    <tr>
+                        <th>Дата изменения</th>
+                        <th>Событие</th>
+                        <th>Старое значение</th>
+                        <th>Новое значение</th>
+                    </tr>
+                    {% for item in asset.history.all %}
+                        <tr>
+                            <td>{{ item.created_at }}</td>
+                            <td>{{ item.event_name }}</td>
+                            {% if item.event_name == 'Создание актива' %}<td></td><td></td>{% endif %}
+                            {% if item.old_name %}<td>{{ item.old_name }}</td>{% endif %}
+                            {% if item.new_name %}<td>{{ item.new_name }}</td>{% endif %}
+                            {% if item.old_location %}<td>{{ item.old_location.name }}</td>{% endif %}
+                            {% if item.new_location %}<td>{{ item.new_location.name }}</td>{% endif %}
+                            {% if item.old_price %}<td>{{ item.old_price }}</td>{% endif %}
+                            {% if item.new_price %}<td>{{ item.new_price }}</td>{% endif %}
+                            {% if item.old_state %}<td>{{ item.old_state }}</td>{% endif %}
+                            {% if item.new_state %}<td>{{ item.new_state }}</td>{% endif %}
+                            {% if item.old_status %}<td>{{ item.get_old_status_display }}</td>{% endif %}
+                            {% if item.new_status %}<td>{{ item.get_new_status_display }}</td>{% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
             <style>
                 .invoice {
                     padding: 20px
@@ -121,5 +151,4 @@
                 }
             </style>
         </div>
-    </div>
 {% endblock %}
