@@ -68,6 +68,35 @@ class LogOut(View):
         return render(self.request, 'web/login.html', context)
 
 
+class Profile(View):
+    def get(self, *args, **kwargs):
+        context = {
+            'title': f'Личный кабинет',
+            'form': forms.ProfileForm(
+                initial={
+                    'first_name': self.request.user.first_name,
+                    'last_name': self.request.user.last_name,
+                    'email': self.request.user.email,
+                }
+            )
+        }
+        return render(self.request, 'web/profile.html', context)
+
+    def post(self, *args, **kwargs):
+        form = forms.ProfileForm(self.request.POST)
+        if form.is_valid():
+            if form.data.get('first_name'):
+                self.request.user.first_name = form.data.get('first_name')
+            if form.data.get('last_name'):
+                self.request.user.last_name = form.data.get('last_name')
+            if form.data.get('email'):
+                self.request.user.email = form.data.get('email')
+            if form.data.get('password'):
+                self.request.user.set_password(form.data.get('password'))
+            self.request.user.save()
+        return HttpResponseRedirect('/')
+
+
 class AssetList(UserMixin, ListView):
     """ Представление главной страницы (список активов)
     """
