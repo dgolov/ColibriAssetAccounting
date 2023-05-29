@@ -86,12 +86,16 @@ class Profile(View):
         form = forms.ProfileForm(self.request.POST)
         if form.is_valid():
             if form.data.get('first_name'):
+                logger.debug(f'[Profile] Updated first_name for user: {self.request.user.username}')
                 self.request.user.first_name = form.data.get('first_name')
             if form.data.get('last_name'):
+                logger.debug(f'[Profile] Updated last_name for user: {self.request.user.username}')
                 self.request.user.last_name = form.data.get('last_name')
             if form.data.get('email'):
+                logger.debug(f'[Profile] Updated email for user: {self.request.user.username}')
                 self.request.user.email = form.data.get('email')
             if form.data.get('password'):
+                logger.debug(f'[Profile] Updated password for user: {self.request.user.username}')
                 self.request.user.set_password(form.data.get('password'))
             self.request.user.save()
         return HttpResponseRedirect('/')
@@ -145,10 +149,12 @@ class CreateAssert(UserMixin, CreateView):
 
     def form_valid(self, form):
         asset = form.save()
+        logger.warning(f"[CreateAssert] Create asset successfully: {form.data}")
         History.objects.create(asset=asset, event_name="Создание актива")
         return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
+        logger.warning(f"[CreateAssert] Invalid form data: {form.data}")
         messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
         return HttpResponseRedirect('/')
 
@@ -190,7 +196,7 @@ class CreateAssertImage(UserMixin, CreateView):
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
     def form_invalid(self, form):
-        logger.debug(f"Upload asset image for asset id {self._object_pk} error")
+        logger.warning(f"Upload asset image for asset id {self._object_pk} error")
         messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
