@@ -117,10 +117,17 @@ class AssetList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
+
         search = self.request.GET.get('search')
-        if search:
+        location_pk = self.request.GET.get('location')
+
+        if location_pk:
+            context['assets'] = Asset.objects.filter(location_id=location_pk)
+        elif search:
             context['assets'] = Asset.objects.filter(name__iregex=search)
+
         context['title'] = 'Активы'
+        context['locations'] = Location.objects.all()
         return context
 
     def get_queryset(self):
