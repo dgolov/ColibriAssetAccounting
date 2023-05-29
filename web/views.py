@@ -19,6 +19,8 @@ logger = logging.getLogger('main')
 
 
 class Auth(View):
+    """ Вход в систему
+    """
     def get(self, *args, **kwargs):
         auth_form = forms.AuthForm
         context = {
@@ -57,6 +59,8 @@ class Auth(View):
 
 
 class LogOut(View):
+    """ Выход из системы
+    """
     def get(self, *args, **kwargs):
         auth_form = forms.AuthForm
         context = {
@@ -69,6 +73,8 @@ class LogOut(View):
 
 
 class Profile(View):
+    """ Личный кабинет пользователя
+    """
     def get(self, *args, **kwargs):
         context = {
             'title': f'Личный кабинет',
@@ -202,6 +208,8 @@ class CreateAssertImage(UserMixin, CreateView):
 
 
 class DeleteAssertImage(UserMixin, DeleteView):
+    """ Удаление изображения актива
+    """
     model = AssetImage
 
     def get_context_data(self, *, object_list=None, **kwargs):

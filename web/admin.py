@@ -8,6 +8,8 @@ admin.site.site_title = 'Административная панель'
 
 @admin.register(Asset)
 class AssetsAdmin(admin.ModelAdmin):
+    """ Админ панель активов
+    """
     list_display = ['id', 'name', 'location', 'updated_at', 'price', 'is_active']
     list_display_links = ['id', 'name']
     list_filter = ['location__name', 'is_active']
@@ -17,12 +19,16 @@ class AssetsAdmin(admin.ModelAdmin):
 
 @admin.register(AssetImage)
 class AssetImageAdmin(admin.ModelAdmin):
+    """ Админ панель изображений активов
+    """
     list_display = ['id', 'asset', 'title']
     list_display_links = ['title', 'asset']
 
 
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
+    """ Админ панель складов
+    """
     list_display = ['id', 'name', 'city', 'address']
     list_display_links = ['id', 'name']
     list_filter = ['city']
@@ -31,12 +37,16 @@ class LocationAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    """ Админ панель отчетов
+    """
     list_display = ['id', 'file', 'created_at']
     list_display_links = ['id', 'file']
 
 
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
+    """ Админ панель истории
+    """
     list_display = ['id', 'event_name', 'full_name']
     list_display_links = ['event_name']
 
