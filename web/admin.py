@@ -37,8 +37,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(History)
 class HistoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'full_name']
-    list_display_links = ['id']
+    list_display = ['id', 'event_name', 'full_name']
+    list_display_links = ['event_name']
 
     def full_name(self, obj):
         return obj.__str__()
