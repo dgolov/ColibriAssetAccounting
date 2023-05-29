@@ -80,6 +80,8 @@ class CreateAssetForm(forms.ModelForm):
 
 
 class CreateAssetImageForm(forms.ModelForm):
+    """ Форма добавления изображения к активу
+    """
     title = forms.CharField(
         widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Введите название актива'}
@@ -168,6 +170,8 @@ class LocationForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
+    """ Форма редактирования данных пользователя для личного кабинета
+    """
     first_name = forms.CharField(
         required=False,
         widget=forms.TextInput(

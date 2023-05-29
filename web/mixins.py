@@ -10,10 +10,14 @@ logger = logging.getLogger('main')
 
 
 class UserMixin(LoginRequiredMixin):
+    """ Миксин пользователей
+    """
     login_url = '/auth'
 
 
 class AssetMixin:
+    """ Миксин функций активов
+    """
     try:
         r = connect_to_redis()
     except Exception as e:
@@ -21,6 +25,8 @@ class AssetMixin:
         r = None
 
     def save_old_asset_data(self, asset: Asset):
+        """ Сохраняет данные в редис
+        """
         if not self.r:
             return
 
@@ -33,6 +39,8 @@ class AssetMixin:
         logger.info(f"[AssetMixin] Save redis data for asset if {asset.pk}")
 
     def get_old_asset_data(self, asset_id: int) -> Union[dict, None]:
+        """ Забирает данные из редиса
+        """
         if not self.r:
             return None
         location_id = self.r.get(f'{asset_id}_location')
@@ -49,6 +57,8 @@ class AssetMixin:
         }
 
     def create_asset_history(self, new_asset: Asset):
+        """ При изменении актива создает запись в историю на основе данных записаных в редис (о старом активе)
+        """
         old_asset = self.get_old_asset_data(asset_id=new_asset.pk)
         if not old_asset:
             return None

@@ -2,6 +2,8 @@ from django.db import models
 
 
 class Location(models.Model):
+    """ Точки / склады
+    """
     name = models.CharField(max_length=256, verbose_name='Название')
     city = models.CharField(max_length=256, verbose_name='Город', blank=True, null=True)
     address = models.CharField(max_length=256, verbose_name='Адрес', blank=True, null=True)
@@ -17,6 +19,8 @@ class Location(models.Model):
 
 
 class Asset(models.Model):
+    """ Активы
+    """
     STATUS_CHOICES = ("in_work", "broken", "under_repair", "in_reserve")
     STATUS_CHOICES_RUS = ("В работе", "Сломано", "В ремонте", "В запасе")
     STATUS_CHOICES = list(zip(STATUS_CHOICES, STATUS_CHOICES_RUS))
@@ -49,6 +53,8 @@ class Asset(models.Model):
 
 
 class AssetImage(models.Model):
+    """ Изображения к активу
+    """
     title = models.CharField(max_length=256, verbose_name='Описание', blank=True, null=True)
     asset = models.ForeignKey(Asset, on_delete=models.CASCADE, verbose_name="Актив", related_name="images")
     image = models.ImageField(upload_to="images/assets/", verbose_name="Изображенеие")
@@ -63,6 +69,8 @@ class AssetImage(models.Model):
 
 
 class Order(models.Model):
+    """ Отчеты
+    """
     file = models.FileField(upload_to="files", verbose_name="Файл")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
 
@@ -75,6 +83,8 @@ class Order(models.Model):
 
 
 class History(models.Model):
+    """ История
+    """
     STATUS_CHOICES = ("in_work", "broken", "under_repair", "in_reserve")
     STATUS_CHOICES_RUS = ("В работе", "Сломано", "В ремонте", "В запасе")
     STATUS_CHOICES = list(zip(STATUS_CHOICES, STATUS_CHOICES_RUS))

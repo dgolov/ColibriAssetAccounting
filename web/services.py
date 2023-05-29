@@ -8,6 +8,8 @@ logger = logging.getLogger('main')
 
 
 def connect_to_redis():
+    """ Подключение к редису
+    """
     logger.info("Try to connect redis")
     return redis.StrictRedis(
         host=settings.REDIS_HOST,
