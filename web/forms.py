@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.auth.models import User
+
 from web.models import Asset, AssetImage, Location, Order, History
 
 
@@ -163,3 +165,38 @@ class LocationForm(forms.ModelForm):
         fields = (
             'name', 'city', 'address', 'phone', 'description'
         )
+
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Введите имя'}
+        ),
+        label="Имя",
+    )
+    last_name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Введите фамилию'}
+        ),
+        label="Фамилия",
+    )
+    email = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Введите адрес электронной почты'}
+        ),
+        label="Электринная почта",
+    )
+    password = forms.CharField(
+        required=False,
+        widget=forms.PasswordInput(
+            attrs={'class': 'form-control'}
+        ),
+        label="Пароль",
+    )
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'password']
