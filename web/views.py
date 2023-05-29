@@ -107,6 +107,9 @@ class AssetList(UserMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
+        search = self.request.GET.get('search')
+        if search:
+            context['assets'] = Asset.objects.filter(name__iregex=search)
         context['title'] = 'Активы'
         return context
 
