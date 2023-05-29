@@ -4,15 +4,20 @@
         <div class="admin-block d-flex">
             <div class="admin-info">
                 <div class="font-strong">{{ user.get_full_name }}</div>
+                {% if user.is_superuser %}
+                    <small>Администратор</small>
+                {% else %}
+                    <small>Пользователь</small>
+                {% endif %}
             </div>
         </div>
         <ul class="side-menu metismenu">
-            <li>
-                <a class="active" href="{% url 'assets' %}">
-                    <i class="sidebar-item-icon fa fa-th-large"></i>
-                    <span class="nav-label">Дашборд</span>
-                </a>
-            </li>
+{#            <li>#}
+{#                <a class="active" href="{% url 'assets' %}">#}
+{#                    <i class="sidebar-item-icon fa fa-th-large"></i>#}
+{#                    <span class="nav-label">Дашборд</span>#}
+{#                </a>#}
+{#            </li>#}
             <li class="heading">Страницы</li>
             <li>
                 <a href="{% url 'assets' %}">
