@@ -1,7 +1,7 @@
 {% load static %}
 <header class="header">
     <div class="page-brand">
-        <a class="link" href="index.html">
+        <a class="link" href="/">
                     <span class="brand">Assets
                         <span class="brand-tip">CRM</span>
                     </span>
@@ -11,10 +11,10 @@
     <div class="flexbox flex-1">
         <ul class="nav navbar-toolbar">
             <li>
-                <form class="navbar-search" action="javascript:;">
+                <form class="navbar-search" action="/" id="search_form" onsubmit="Search()">
                     <div class="rel">
                         <span class="search-icon"><i class="ti-search"></i></span>
-                        <input class="form-control" placeholder="Поиск...">
+                        <input class="form-control" name="search" placeholder="Поиск...">
                     </div>
                 </form>
             </li>
@@ -25,9 +25,7 @@
                     <img src="{% static 'img/admin-avatar.png' %}"/>
                     <span></span>{{ user.get_username }}<i class="fa fa-angle-down m-l-5"></i></a>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="profile.html"><i class="fa fa-user"></i>Профиль</a>
-                    <a class="dropdown-item" href="profile.html"><i class="fa fa-cog"></i>Настройки</a>
-                    <a class="dropdown-item" href="javascript:;"><i class="fa fa-support"></i>О программе</a>
+                    <a class="dropdown-item" href="{% url 'profile' %}"><i class="fa fa-user"></i>Профиль</a>
                     <li class="dropdown-divider"></li>
                     <a class="dropdown-item" href="{% url 'logout' %}">
                         <i class="fa fa-power-off"></i>Выход

@@ -35,5 +35,12 @@
     <script src="{% static 'vendors/jvectormap/jquery-jvectormap-us-aea-en.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/app.min.js' %}" type="text/javascript' %}"></script>
     <script src="{% static 'js/scripts/dashboard_1_demo.js' %}" type="text/javascript"></script>
+    <script>
+        function Search(){
+            let action_src = "/" + document.getElementsByName("keywords")[0].value;
+            let your_form = document.getElementById('search_form');
+            your_form.action = action_src ;
+        }
+    </script>
 </body>
 </html>
