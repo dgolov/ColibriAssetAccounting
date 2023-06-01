@@ -20,6 +20,7 @@ class AssetMixin:
     """
     try:
         r = connect_to_redis()
+        logger.info(f"[AssetMixin] Connect to redis - {r}")
     except Exception as e:
         logger.error(f"[AssetMixin] Connect to redis error - {e}")
         r = None
