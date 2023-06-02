@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: sh -c "gunicorn ColibriAssetAccounting.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+    expose:
+      - 8000
+    links:
+      - redis
+  nginx:
+    build: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - web
+    volumes:
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
+  redis:
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+volumes:
+  static_volume:
+  media_volume:
+  redis_data:
