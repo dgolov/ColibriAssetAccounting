@@ -7,3 +7,6 @@ README.md
 .gitignore
 .idea/
 __pycache__
+nginx/
+postgres/
+Dockerfile
