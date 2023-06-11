@@ -31,9 +31,11 @@ class Asset(models.Model):
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
     location = models.ForeignKey(
         Location,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name="Местоположение",
-        related_name='assets'
+        related_name='assets',
+        blank=True,
+        null=True
     )
     year_of_purchase = models.DateField(verbose_name="Дата покупки")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
