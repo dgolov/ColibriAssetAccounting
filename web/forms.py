@@ -43,6 +43,7 @@ class CreateAssetForm(forms.ModelForm):
         widget=forms.Select(
             attrs={'class': 'form-control'}
         ),
+        required=False,
         label="Склад"
     )
     year_of_purchase = forms.DateField(
