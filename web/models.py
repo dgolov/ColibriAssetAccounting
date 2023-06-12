@@ -150,3 +150,10 @@ class Notifications(models.Model):
     message = models.TextField(verbose_name="Сообщение")
     level = models.CharField(max_length=256, verbose_name='Статус', choices=LEVEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время сообщения")
+
+    def __str__(self):
+        return f"{self.message}"
+
+    class Meta:
+        verbose_name = "Уведомление"
+        verbose_name_plural = "Уведомления"
