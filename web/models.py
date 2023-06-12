@@ -139,3 +139,14 @@ class History(models.Model):
     class Meta:
         verbose_name = "История"
         verbose_name_plural = "История"
+
+
+class Notifications(models.Model):
+    """ Модель уведомлений """
+    LEVEL_CHOICES = ("success", "error", "warning", "info", "debug")
+    LEVEL_CHOICES_RUS = ("Успешно", "Ошибка", "Предупреждение", "Информация", "Отладка")
+    LEVEL_CHOICES = list(zip(LEVEL_CHOICES, LEVEL_CHOICES_RUS))
+
+    message = models.TextField(verbose_name="Сообщение")
+    level = models.CharField(max_length=256, verbose_name='Статус', choices=LEVEL_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время сообщения")
