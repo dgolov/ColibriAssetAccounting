@@ -178,12 +178,16 @@ class CreateAssert(UserMixin, CreateView):
         asset = form.save()
         logger.info(f"[CreateAssert] Create asset successfully: {form.data}")
         History.objects.create(asset=asset, event_name="Создание актива")
-        add_message(self.request, level='success', message=f'Актив {asset} успешно создан')
+        add_message(self.request, level='success', message=f"Актив {form.data.get('name')} успешно создан")
         return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
         logger.warning(f"[CreateAssert] Invalid form data: {form.data}")
-        messages.add_message(self.request, messages.ERROR, 'Ошибка создания актива. Введены некорректные данные.')
+        add_message(
+            self.request,
+            level='error',
+            message=f"Ошибка создания актива. {form.data.get('name')} Введены некорректные данные."
+        )
         return HttpResponseRedirect('/')
 
 
@@ -294,12 +298,16 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
                 level='error',
                 message='Ошибка записи истории актива. Нет соединения с брокером сообщений'
             )
-        add_message(self.request, level='success', message=f'Актив {self.get_object()} успешно обновлен.')
+        add_message(self.request, level='success', message=f"Актив {form.data.get('name')} успешно обновлен.")
         return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def form_invalid(self, form):
-        logger.warning(f"Update asset {self.object} error")
-        add_message(self.request, level='error', message='Ошибка обновления актива. Введены некорректные данные.')
+        logger.warning(f"Update asset {form.data.get('name')} error")
+        add_message(
+            self.request,
+            level='error',
+            message=f"Ошибка обновления актива {form.data.get('name')}. Введены некорректные данные."
+        )
         return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def put(self, *args, **kwargs):
@@ -371,14 +379,14 @@ class CreateLocation(UserMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        add_message(self.request, level='success', message=f'Склад {self.get_object()} успешно создан.')
+        add_message(self.request, level='success', message=f"Склад {form.data.get('name')} успешно создан.")
         return super(CreateLocation, self).form_valid(form)
 
     def form_invalid(self, form):
         add_message(
             self.request,
             level='error',
-            message=f'Ошибка создания склада {self.get_object()}. Введены некорректные данные.'
+            message=f"Ошибка создания склада {form.data.get('name')}. Введены некорректные данные."
         )
         return super(CreateLocation, self).form_invalid(form)
 
@@ -414,14 +422,14 @@ class UpdateLocation(UserMixin, UpdateView):
         return f'/locations/{self.get_object().pk}'
 
     def form_valid(self, form):
-        add_message(self.request, level='success', message=f'Склад {self.get_object()} успешно обновлен.')
+        add_message(self.request, level='success', message=f"Склад {form.data.get('name')} успешно обновлен.")
         return super(UpdateLocation, self).form_valid(form)
 
     def form_invalid(self, form):
         add_message(
             self.request,
             level='error',
-            message=f'Ошибка обновления склада {self.get_object()}. Введены некорректные данные.'
+            message=f"Ошибка обновления склада {form.data.get('name')}. Введены некорректные данные."
         )
         return super(UpdateLocation, self).form_invalid(form)
 
