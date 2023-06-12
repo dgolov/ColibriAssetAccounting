@@ -8,6 +8,12 @@
                     <h1 class="page-title">Уведомления</h1>
                 </div>
             </div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">Уведомления</li>
+            </ol>
         </div>
         <div class="page-content fade-in-up">
             <div class="row">
@@ -37,6 +43,7 @@
                                     </div>
                                 {% endif %}
                             {% endfor %}
+                            {% include 'inc/pagination.html' %}
                         </div>
                     </div>
                 </div>

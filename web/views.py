@@ -517,7 +517,7 @@ class AssetsImport(UserMixin, View):
         }
 
 
-class NotificationsListView(ListView):
+class NotificationsListView(UserMixin, ListView):
     """ Представление списка уведомлений
     """
     model = Notifications
@@ -525,7 +525,10 @@ class NotificationsListView(ListView):
     context_object_name = 'notifications'
     paginate_by = 30
 
+    def get_queryset(self):
+        return Notifications.objects.filter(user=self.request.user)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(NotificationsListView, self).get_context_data()
-        context['title'] = 'Отчеты'
+        context['title'] = 'Уведомления'
         return context

@@ -60,7 +60,6 @@ class HistoryAdmin(admin.ModelAdmin):
 class NotificationsAdmin(admin.ModelAdmin):
     """ Админ панель уведомлений
     """
-    list_display = ['id', 'message', 'level']
+    list_display = ['id', 'message', 'level', 'user']
     list_display_links = ['message']
-    list_filter = ['level']
-
+    list_filter = ['level', 'user']
