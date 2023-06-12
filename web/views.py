@@ -32,6 +32,22 @@ def add_message(request, level, message):
     Notifications.objects.create(message=message, level=level)
 
 
+class MainView(View):
+    """ Представление дашборда
+    """
+    def get(self, *args, **kwargs):
+        return render(self.request, "web/index.html", context=self.get_context_data())
+
+    @staticmethod
+    def get_context_data():
+        return {
+            "title": " Дашборд",
+            "assets_count": Asset.objects.all().count(),
+            "location_count": Location.objects.all().count(),
+            "user_count": User.objects.all().count(),
+        }
+
+
 class Auth(View):
     """ Вход в систему
     """
@@ -125,7 +141,7 @@ class AssetList(UserMixin, ListView):
     """ Представление главной страницы (список активов)
     """
     model = Asset
-    template_name = 'web/index.html'
+    template_name = 'web/assets.html'
     context_object_name = 'assets'
     paginate_by = 30
 
