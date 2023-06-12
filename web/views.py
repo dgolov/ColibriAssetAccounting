@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
+from excel import parse_import, handle_uploaded_file
 from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History
 from web import forms
@@ -412,3 +413,27 @@ class CreateOrder(UserMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         super(CreateOrder, self).post(request, *args, **kwargs)
+
+
+class AssetsImport(UserMixin, View):
+    """ Импорт активов средствами excel
+    """
+    template_name = 'web/assets_import.html'
+
+    def get(self, *args, **kwargs):
+        return render(self.request, self.template_name, self.get_context_data())
+
+    def post(self, *args, **kwargs):
+        form = forms.ImportAssetsForm(self.request.POST, self.request.FILES)
+        if form.is_valid():
+            path = handle_uploaded_file(self.request.FILES["file"])
+            parse_import(file_name=path)
+            return HttpResponseRedirect('/')
+        return render(self.request, self.template_name, self.get_context_data())
+
+    @staticmethod
+    def get_context_data():
+        return {
+            "form": forms.ImportAssetsForm,
+            "title": "Импорт активов"
+        }
