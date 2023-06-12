@@ -1,4 +1,5 @@
 import logging
+import os
 import pandas as pd
 
 from django.conf import settings
@@ -23,3 +24,5 @@ def parse_import(file_name):
             field = settings.ASSET_UPLOAD_FIELDS[fields_index]
             asset.set_attr(key=field, value=df[column_name].tolist()[columns_index])
         asset.save()
+
+    os.remove(file_name)
