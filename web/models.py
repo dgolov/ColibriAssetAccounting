@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -150,6 +151,7 @@ class Notifications(models.Model):
     message = models.TextField(verbose_name="Сообщение")
     level = models.CharField(max_length=256, verbose_name='Статус', choices=LEVEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время сообщения")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
 
     def __str__(self):
         return f"{self.message}"
