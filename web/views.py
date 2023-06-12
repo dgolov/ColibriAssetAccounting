@@ -134,6 +134,9 @@ class Profile(View):
                 logger.debug(f'[Profile] Updated password for user: {self.request.user.username}')
                 self.request.user.set_password(form.data.get('password'))
             self.request.user.save()
+            add_message(self.request, level='success', message=f"Данные пользователя обновлены")
+        else:
+            add_message(self.request, level='success', message=f"Ошибка! Данные пользователя не были обновлены.")
         return HttpResponseRedirect('/')
 
 
