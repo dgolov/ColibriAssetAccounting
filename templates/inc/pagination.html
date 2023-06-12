@@ -1,0 +1,31 @@
+{% if page_obj.paginator.num_pages > 1 %}
+    <div class="row">
+    <div class="col-sm-12 col-md-12">
+        <div class="dataTables_paginate paging_simple_numbers" id="example-table_paginate">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="paginate_button page-item previous"
+                        id="example-table_previous">
+                        <a href="?page={{ page_obj.previous_page_number }}"
+                           aria-controls="example-table" data-dt-idx="0" tabindex="0"
+                           class="page-link">Предыдущая</a>
+                    </li>
+                {% endif %}
+                {% for page in paginator.page_range %}
+                    <li class="paginate_button page-item {% if page == page_obj.number %} active {% endif %}">
+                        <a href="?page={{ page }}" aria-controls="example-table"
+                           data-dt-idx="{{ page }}" tabindex="0" class="page-link">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="paginate_button page-item next" id="example-table_next">
+                        <a href="?page={{ page_obj.next_page_number }}"
+                           aria-controls="example-table" data-dt-idx="5" tabindex="0"
+                           class="page-link">Следующая</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endif %}
