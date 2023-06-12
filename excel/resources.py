@@ -9,7 +9,9 @@ import logging
 logger = logging.getLogger('main')
 
 
-class AssetBase:
+class AssetExcelBase:
+    """ Абстрактный класс результатов парсинга активов средствами экель
+    """
     @abstractmethod
     def set_price(self, price) -> None:
         pass
@@ -27,7 +29,9 @@ class AssetBase:
         pass
 
 
-class AssetExcel(AssetBase):
+class AssetExcel(AssetExcelBase):
+    """ Результат парсинга активов
+    """
     def __init__(
             self, name: str, location: Union[None, str] = None,
             price: Union[None, float] = None, year_of_purchase: Union[None, int] = None,
@@ -45,6 +49,7 @@ class AssetExcel(AssetBase):
         return f"{self.name}"
 
     def set_attr(self, key: str, value: Union[str, float, int, None]) -> None:
+        """ Установка атрибутов классса """
         mapping_method = {
             "location": self.set_location,
             "price": self.set_price,
@@ -78,6 +83,7 @@ class AssetExcel(AssetBase):
 
     @staticmethod
     def map_status(value: str) -> str:
+        """ Маппинг статусов для записи в БД """
         status_mapping_dict = {
             "В работе": "in_work",
             "Сломано": "broken",
@@ -87,6 +93,7 @@ class AssetExcel(AssetBase):
         return status_mapping_dict.get(value, "")
 
     def save(self) -> Union[str, None]:
+        """ Запись актива в БД """
         logger.info(f"[Excel.Asset.save] Save asset '{self.name}' to database")
         try:
             location = Location.objects.get(name=self.location)

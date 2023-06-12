@@ -1,5 +1,5 @@
 from django.contrib import admin
-from web.models import Asset, AssetImage, Location, Order, History
+from web.models import Asset, AssetImage, Location, Order, History, Notifications
 
 
 admin.site.site_header = 'Административная панель'
@@ -54,3 +54,13 @@ class HistoryAdmin(admin.ModelAdmin):
         return obj.__str__()
 
     full_name.short_description = 'Актив'
+
+
+@admin.register(Notifications)
+class NotificationsAdmin(admin.ModelAdmin):
+    """ Админ панель уведомлений
+    """
+    list_display = ['id', 'message', 'level']
+    list_display_links = ['message']
+    list_filter = ['level']
+

@@ -208,4 +208,6 @@ class ProfileForm(forms.ModelForm):
 
 
 class ImportAssetsForm(forms.Form):
+    """ Форма иморта активов
+    """
     file = forms.FileField()
