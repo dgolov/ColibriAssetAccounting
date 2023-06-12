@@ -48,6 +48,7 @@ ALLOWED_HOSTS=0.0.0.0,127.0.0.1
 
 - Python3
 - Django3
+- Pandas
 - Redis
 - HTML5
 - CSS3
