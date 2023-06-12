@@ -8,12 +8,18 @@
                     <h1 class="page-title">Отчеты</h1>
                 </div>
                 <div class="col-md-2">
-                    <a type="button" href=""
+                    <a type="button" href="{% url 'create_order' %}"
                        class="btn btn-outline-primary px-5 mt-5" style="float: right;">
                         Сформировать отчет
                     </a>
                 </div>
             </div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">Отчеты</li>
+            </ol>
         </div>
         <div class="page-content fade-in-up">
             <div class="ibox">
@@ -37,7 +43,7 @@
                         <tbody>
                         {% for order in orders %}
                             <tr>
-                                <td>{{ order.file.path }}</td>
+                                <td><a href="{{ order.file_path }}" download>{{ order.get_file_name }}</a></td>
                                 <td>{{ order.created_at }}</td>
                             </tr>
                         {% endfor %}

@@ -27,7 +27,10 @@
         </div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/">Активы</a>
+                <a href="{% url 'dashboard' %}">Главная</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'assets' %}">Активы</a>
             </li>
             <li class="breadcrumb-item">{{ asset.name }}</li>
         </ol>
@@ -92,7 +95,7 @@
                         {% else %}
                             <div class="carousel-item">
                         {% endif %}
-                    <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.title }}">
+                    <img src="{{ photo.image.url }}" class="d-block w-100" alt="{{ photo.title }}" style="max-height: 400px">
                     </div>
                     {% endfor %}
                     </div>

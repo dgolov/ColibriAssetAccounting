@@ -6,10 +6,12 @@
             <h1 class="page-title">Обновление актива {{ asset.name }}</h1>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                    <a href="/">Главная</a>
+                    <a href="{% url 'dashboard' %}">Главная</a>
                 </li>
+                <li class="breadcrumb-item">Склады</li>
+            </ol>
                 <li class="breadcrumb-item">
-                    <a href="{% url 'assets' %}">Склады</a>
+                    <a href="{% url 'assets' %}">Активы</a>
                 </li>
                 <li class="breadcrumb-item">
                     <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>

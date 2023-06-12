@@ -14,6 +14,12 @@
                     </a>
                 </div>
             </div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">Склады</li>
+            </ol>
         </div>
         <div class="page-content fade-in-up">
             <div class="ibox">
@@ -51,6 +57,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
+                    {% include 'inc/pagination.html' %}
                 </div>
             </div>
         </div>
