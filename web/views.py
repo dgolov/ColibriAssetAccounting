@@ -507,3 +507,17 @@ class AssetsImport(UserMixin, View):
             "form": forms.ImportAssetsForm,
             "title": "Импорт активов"
         }
+
+
+class NotificationsListView(ListView):
+    """ Представление списка уведомлений
+    """
+    model = Notifications
+    template_name = 'web/notifications.html'
+    context_object_name = 'notifications'
+    paginate_by = 30
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(NotificationsListView, self).get_context_data()
+        context['title'] = 'Отчеты'
+        return context
