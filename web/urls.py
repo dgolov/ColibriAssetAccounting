@@ -4,7 +4,8 @@ import web.views as views
 
 
 urlpatterns = [
-    path('', views.AssetList.as_view(), name='assets'),
+    path('', views.MainView.as_view(), name='dashboard'),
+    path('assets', views.AssetList.as_view(), name='assets'),
     path('auth', views.Auth.as_view(), name='auth'),
     path('logout', views.LogOut.as_view(), name='logout'),
     path('profile', views.Profile.as_view(), name='profile'),
