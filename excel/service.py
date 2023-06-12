@@ -10,6 +10,10 @@ logger = logging.getLogger('main')
 
 
 def parse_import(file_name):
+    """ Парсинг файла excel импорта активов
+    :param file_name: путь к файлу
+    :return:
+    """
     logger.info("[Parse excel] Start parsing data")
     df = pd.read_excel(file_name)
 
@@ -26,3 +30,21 @@ def parse_import(file_name):
         asset.save()
 
     os.remove(file_name)
+
+
+def handle_uploaded_file(file) -> str:
+    """ Загрузка файла
+    :param file: Файл импорта активов
+    :return: путь загруженного файла
+    """
+    path = "media/uploads/"
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+    path += f"{file}"
+
+    with open(path, "wb+") as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+
+    return f"{path}"
