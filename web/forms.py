@@ -205,3 +205,7 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'password']
+
+
+class ImportAssetsForm(forms.Form):
+    file = forms.FileField()
