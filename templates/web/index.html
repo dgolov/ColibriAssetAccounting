@@ -3,80 +3,35 @@
 {% block content %}
     <div class="page-content fade-in-up">
         <div class="page-heading">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 class="page-title">Активы</h1>
-                </div>
-                <div class="col-md-2">
-                    <a type="button" href="{% url 'assets_import' %}"
-                       class="btn btn-outline-primary px-5 mt-5" style="float: right;">
-                        Импорт активов
-                    </a>
-                </div>
-                <div class="col-md-2">
-                    <a type="button" href="{% url 'create_asset' %}"
-                       class="btn btn-outline-primary px-5 mt-5" style="float: right;">
-                        Добавить актив
-                    </a>
-                </div>
-            </div>
-            <div class="row mx-1 my-0">
-                <a type="button" href="/"
-                   class="btn btn-primary px-5 mt-5 mx-1" style="float: right;">
-                    Все
-                </a>
-                {% for location in locations %}
-                    <a type="button" href="/?location={{ location.pk }}"
-                       class="btn btn-primary px-5 mt-5 mx-1" style="float: right;">
-                        {{ location.name }}
-                    </a>
-                {% endfor %}
-            </div>
+            <h1 class="page-title">Дашборд</h1>
         </div>
         <div class="page-content fade-in-up">
-            <div class="ibox">
-                <div class="ibox-body">
-                    <table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0"
-                           width="100%">
-                        <thead>
-                        <tr>
-                            <th>Наименование</th>
-                            <th>Местоположение</th>
-                            <th>Стоимость</th>
-                            <th>Год закупки</th>
-                            <th>Статус</th>
-                            <th>Состояние</th>
-                        </tr>
-                        </thead>
-                        {% if assets|length > 15 %}
-                            <tfoot>
-                            <tr>
-                                <th>Наименование</th>
-                                <th>Местоположение</th>
-                                <th>Стоимость</th>
-                                <th>Год закупки</th>
-                                <th>Статус</th>
-                                <th>Состояние</th>
-                            </tr>
-                            </tfoot>
-                        {% endif %}
-                        <tbody>
-                        {% for asset in assets %}
-                            <tr>
-                                <td>
-                                    <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
-                                </td>
-                                <td>{{ asset.location.name }}</td>
-                                <td>{{ asset.price }}</td>
-                                <td>{{ asset.year_of_purchase.year }}</td>
-                                <td>{{ asset.get_status_display }}</td>
-                                <td>{{ asset.state }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+            <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="ibox bg-success color-white widget-stat">
+                            <div class="ibox-body">
+                                <h2 class="m-b-5 font-strong">{{ assets_count }}</h2>
+                                <div class="m-b-5">Активов в системе</div><i class="ti-layers widget-stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="ibox bg-info color-white widget-stat">
+                            <div class="ibox-body">
+                                <h2 class="m-b-5 font-strong">{{ location_count }}</h2>
+                                <div class="m-b-5">Складов в системе</div><i class="ti-server widget-stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="ibox bg-danger color-white widget-stat">
+                            <div class="ibox-body">
+                                <h2 class="m-b-5 font-strong">{{ user_count }}</h2>
+                                <div class="m-b-5">Пользователей в системе</div><i class="ti-user widget-stat-icon"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </div>
     </div>
 {% endblock %}

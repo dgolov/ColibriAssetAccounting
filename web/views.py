@@ -6,11 +6,11 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
-from excel import parse_import, handle_uploaded_file
+from excel import parse_import, handle_uploaded_file, create_order
 from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History, Notifications
 from web import forms
-from web.mixins import UserMixin, AssetMixin
+from web.mixins import UserMixin, AssetMixin, OrderMixin
 
 
 import logging
@@ -30,6 +30,22 @@ def add_message(request, level, message):
     message_level = level_map.get(level)
     messages.add_message(request, message_level, message)
     Notifications.objects.create(message=message, level=level)
+
+
+class MainView(View):
+    """ Представление дашборда
+    """
+    def get(self, *args, **kwargs):
+        return render(self.request, "web/index.html", context=self.get_context_data())
+
+    @staticmethod
+    def get_context_data():
+        return {
+            "title": " Дашборд",
+            "assets_count": Asset.objects.all().count(),
+            "location_count": Location.objects.all().count(),
+            "user_count": User.objects.all().count(),
+        }
 
 
 class Auth(View):
@@ -118,6 +134,9 @@ class Profile(View):
                 logger.debug(f'[Profile] Updated password for user: {self.request.user.username}')
                 self.request.user.set_password(form.data.get('password'))
             self.request.user.save()
+            add_message(self.request, level='success', message=f"Данные пользователя обновлены")
+        else:
+            add_message(self.request, level='success', message=f"Ошибка! Данные пользователя не были обновлены.")
         return HttpResponseRedirect('/')
 
 
@@ -125,7 +144,7 @@ class AssetList(UserMixin, ListView):
     """ Представление главной страницы (список активов)
     """
     model = Asset
-    template_name = 'web/index.html'
+    template_name = 'web/assets.html'
     context_object_name = 'assets'
     paginate_by = 30
 
@@ -179,7 +198,7 @@ class CreateAssert(UserMixin, CreateView):
         logger.info(f"[CreateAssert] Create asset successfully: {form.data}")
         History.objects.create(asset=asset, event_name="Создание актива")
         add_message(self.request, level='success', message=f"Актив {form.data.get('name')} успешно создан")
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/assets')
 
     def form_invalid(self, form):
         logger.warning(f"[CreateAssert] Invalid form data: {form.data}")
@@ -188,7 +207,7 @@ class CreateAssert(UserMixin, CreateView):
             level='error',
             message=f"Ошибка создания актива. {form.data.get('name')} Введены некорректные данные."
         )
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/assets')
 
 
 class CreateAssertImage(UserMixin, CreateView):
@@ -506,7 +525,7 @@ class AssetsImport(UserMixin, View):
             if len(success_messages_list):
                 for success_message in success_messages_list:
                     add_message(self.request, level='success', message=success_message)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/assets')
         return render(self.request, self.template_name, self.get_context_data())
 
     @staticmethod

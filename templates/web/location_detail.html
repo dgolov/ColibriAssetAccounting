@@ -21,7 +21,7 @@
         </div>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/">Главная</a>
+                <a href="{% url 'dashboard' %}">Главная</a>
             </li>
             <li class="breadcrumb-item">
                 <a href="{% url 'locations' %}">Склады</a>
@@ -64,9 +64,11 @@
             .invoice {
                 padding: 20px
             }
+
             .invoice-header {
                 margin-bottom: 50px
             }
+
             .table-invoice tr td:last-child {
                 text-align: right;
             }
