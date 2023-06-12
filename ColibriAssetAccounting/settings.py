@@ -155,3 +155,8 @@ LOGGING = {
         }
     }
 }
+
+# Формат загружаемого excel файда
+
+ASSET_UPLOAD_FORMAT = os.environ.get('UPLOAD_FORMAT', '').split(',')
+ASSET_UPLOAD_FIELDS = os.environ.get('UPLOAD_FIELDS', '').split(',')
