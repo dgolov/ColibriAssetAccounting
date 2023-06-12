@@ -37,7 +37,7 @@
                             <th>Наименование</th>
                             <th>Местоположение</th>
                             <th>Стоимость</th>
-                            <th>Дата обновления</th>
+                            <th>Год закупки</th>
                             <th>Статус</th>
                             <th>Состояние</th>
                         </tr>
@@ -48,7 +48,7 @@
                                 <th>Наименование</th>
                                 <th>Местоположение</th>
                                 <th>Стоимость</th>
-                                <th>Дата обновления</th>
+                                <th>Год закупки</th>
                                 <th>Статус</th>
                                 <th>Состояние</th>
                             </tr>
@@ -63,7 +63,7 @@
                                 <td>{{ asset.location.name }}</td>
                                 <td>{{ asset.price }}</td>
                                 <td>{{ asset.year_of_purchase.year }}</td>
-                                <td>{{ asset.status }}</td>
+                                <td>{{ asset.get_status_display }}</td>
                                 <td>{{ asset.state }}</td>
                             </tr>
                         {% endfor %}
