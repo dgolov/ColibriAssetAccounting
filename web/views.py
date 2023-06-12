@@ -163,13 +163,14 @@ class CreateAssert(UserMixin, CreateView):
 
     def form_valid(self, form):
         asset = form.save()
-        logger.warning(f"[CreateAssert] Create asset successfully: {form.data}")
+        logger.info(f"[CreateAssert] Create asset successfully: {form.data}")
         History.objects.create(asset=asset, event_name="Создание актива")
+        messages.add_message(self.request, messages.SUCCESS, f'Актив {asset} успешно создан')
         return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
         logger.warning(f"[CreateAssert] Invalid form data: {form.data}")
-        messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
+        messages.add_message(self.request, messages.ERROR, 'Ошибка создания актива. Введены некорректные данные.')
         return HttpResponseRedirect('/')
 
 
@@ -206,12 +207,16 @@ class CreateAssertImage(UserMixin, CreateView):
 
     def form_valid(self, form):
         form.save()
-        logger.debug(f"Upload asset image for asset id {self._object_pk} successfully")
+        logger.info(f"Upload asset image for asset id {self._object_pk} successfully")
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
     def form_invalid(self, form):
         logger.warning(f"Upload asset image for asset id {self._object_pk} error")
-        messages.add_message(self.request, messages.ERROR, 'Ошибка создания записи. Введены некорректные данные.')
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            'Ошибка загрузки изображения актива. Введены некорректные данные.'
+        )
         return HttpResponseRedirect(f'/assets/{self._object_pk}')
 
 
@@ -271,6 +276,17 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
             self.create_asset_history(new_asset=updated_asset)
         except ConnectionError as e:
             logger.error(f"[UpdateAsset POST] Redis connection error - {e}")
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                'Ошибка записи истории актива. Нет соединения с брокером сообщений'
+            )
+        messages.add_message(self.request, messages.SUCCESS, f'Актив {self.get_object()} успешно обновлен.')
+        return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
+
+    def form_invalid(self, form):
+        logger.warning(f"Update asset {self.object} error")
+        messages.add_message(self.request, messages.ERROR, 'Ошибка обновления актива. Введены некорректные данные.')
         return HttpResponseRedirect(f'/assets/{self.get_object().pk}')
 
     def put(self, *args, **kwargs):
@@ -291,9 +307,14 @@ class DeleteAssert(UserMixin, DeleteView):
             context['asset'] = asset
         except Asset.DoesNotExist as e:
             logger.error(f"[DeleteAssert GET] Delete asset error - {e}")
+            messages.add_message(self.request, messages.ERROR, f'Ошибка удаления актива {self.get_object()} - {e}.')
             return {}
         context['title'] = f'Удаление актива {asset.name}'
         return context
+
+    def delete(self, request, *args, **kwargs):
+        messages.add_message(self.request, messages.SUCCESS, f'Актив {self.get_object()} успешно удален.')
+        return super(DeleteAssert, self).delete(request, *args, **kwargs)
 
 
 class LocationList(UserMixin, ListView):
@@ -336,6 +357,18 @@ class CreateLocation(UserMixin, CreateView):
         context['form'] = forms.LocationForm
         return context
 
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, f'Склад {self.get_object()} успешно создан.')
+        return super(CreateLocation, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            f'Ошибка создания склада {self.get_object()}. Введены некорректные данные.'
+        )
+        return super(CreateLocation, self).form_invalid(form)
+
 
 class UpdateLocation(UserMixin, UpdateView):
     """ Обновление местоположения
@@ -367,6 +400,18 @@ class UpdateLocation(UserMixin, UpdateView):
     def get_success_url(self):
         return f'/locations/{self.get_object().pk}'
 
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, f'Склад {self.get_object()} успешно обновлен.')
+        return super(UpdateLocation, self).form_valid(form)
+
+    def form_invalid(self, form):
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            f'Ошибка обновления склада {self.get_object()}. Введены некорректные данные.'
+        )
+        return super(UpdateLocation, self).form_invalid(form)
+
 
 class DeleteLocation(UserMixin, DeleteView):
     """ Удаление местоположения
@@ -385,6 +430,10 @@ class DeleteLocation(UserMixin, DeleteView):
             return {}
         context['title'] = f'Удаление склада {location.name}'
         return context
+
+    def delete(self, request, *args, **kwargs):
+        messages.add_message(self.request, messages.SUCCESS, f'Склад {self.get_object()} успешно удален.')
+        return super(DeleteLocation, self).delete(request, *args, **kwargs)
 
 
 class OrderList(UserMixin, ListView):
@@ -427,7 +476,15 @@ class AssetsImport(UserMixin, View):
         form = forms.ImportAssetsForm(self.request.POST, self.request.FILES)
         if form.is_valid():
             path = handle_uploaded_file(self.request.FILES["file"])
-            parse_import(file_name=path)
+            parse_messages = parse_import(file_name=path)
+            error_messages_list = parse_messages.get('error')
+            success_messages_list = parse_messages.get('success')
+            if len(error_messages_list):
+                for error_message in error_messages_list:
+                    messages.add_message(self.request, messages.ERROR, error_message)
+            if len(success_messages_list):
+                for success_message in success_messages_list:
+                    messages.add_message(self.request, messages.SUCCESS, success_message)
             return HttpResponseRedirect('/')
         return render(self.request, self.template_name, self.get_context_data())
 
