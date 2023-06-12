@@ -6,11 +6,11 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
-from excel import parse_import, handle_uploaded_file
+from excel import parse_import, handle_uploaded_file, create_order
 from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History, Notifications
 from web import forms
-from web.mixins import UserMixin, AssetMixin
+from web.mixins import UserMixin, AssetMixin, OrderMixin
 
 
 import logging
@@ -195,7 +195,7 @@ class CreateAssert(UserMixin, CreateView):
         logger.info(f"[CreateAssert] Create asset successfully: {form.data}")
         History.objects.create(asset=asset, event_name="Создание актива")
         add_message(self.request, level='success', message=f"Актив {form.data.get('name')} успешно создан")
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/assets')
 
     def form_invalid(self, form):
         logger.warning(f"[CreateAssert] Invalid form data: {form.data}")
@@ -204,7 +204,7 @@ class CreateAssert(UserMixin, CreateView):
             level='error',
             message=f"Ошибка создания актива. {form.data.get('name')} Введены некорректные данные."
         )
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/assets')
 
 
 class CreateAssertImage(UserMixin, CreateView):
@@ -522,7 +522,7 @@ class AssetsImport(UserMixin, View):
             if len(success_messages_list):
                 for success_message in success_messages_list:
                     add_message(self.request, level='success', message=success_message)
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/assets')
         return render(self.request, self.template_name, self.get_context_data())
 
     @staticmethod
