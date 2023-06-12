@@ -37,7 +37,7 @@
                             {% else %}
                                 <span><strong>Нет новых</strong> уведомлений</span>
                             {% endif %}
-                            <a class="pull-right" href="javascript:;">view all</a>
+                            <a class="pull-right" href="{% url 'notifications' %}">смотреть все</a>
                         </div>
                     </li>
                     <div class="slimScrollDiv"
@@ -45,25 +45,22 @@
                         <li class="list-group list-group-divider scroller" data-height="240px" data-color="#71808f"
                             style="overflow: hidden; width: auto; height: 240px;">
                             <div>
-                                {% for message in messages %}
-                                    <a class="list-group-item">
+                                <a class="list-group-item">
                                     <div class="media">
-                                        <div class="media-img">
-                                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                                                <span class="badge badge-success badge-big">
-                                                    <i class="fa fa-check"></i>
-                                                </span>
-                                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                                                <span class="badge badge-danger badge-big">
-                                                    <i class="fa fa-bolt"></i>
-                                                </span>
-                                            {% endif %}
-                                        </div>
                                         <div class="media-body">
-                                            <div class="font-13">{{ message }}</div>
-                                    </div>
+                                            {% for message in messages %}
+                                                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                                    <div class="font-13 alert alert-success">{{ message }}</div>
+                                                {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                                    <div class="font-13 alert alert-danger">{{ message }}</div>
+                                                {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                                                    <div class="font-13 alert alert-warning">{{ message }}</div>
+                                                {% else %}
+                                                    <div class="font-13 alert alert-info">{{ message }}</div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
                                 </a>
-                                {% endfor %}
                             </div>
                         </li>
                         <div class="slimScrollBar"
