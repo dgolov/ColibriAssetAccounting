@@ -20,6 +20,59 @@
             </li>
         </ul>
         <ul class="nav navbar-toolbar">
+            <li class="dropdown dropdown-notification">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bell-o rel">
+                        {% if messages %}
+                            <span class="notify-signal"></span>
+                        {% endif %}
+                    </i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right dropdown-menu-media" x-placement="bottom-end"
+                    style="position: absolute; transform: translate3d(45px, 45px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <li class="dropdown-menu-header">
+                        <div>
+                            {% if messages %}
+                                <span><strong>{{ messages|length }} новых</strong> уведомлений</span>
+                            {% else %}
+                                <span><strong>Нет новых</strong> уведомлений</span>
+                            {% endif %}
+                            <a class="pull-right" href="javascript:;">view all</a>
+                        </div>
+                    </li>
+                    <div class="slimScrollDiv"
+                         style="position: relative; overflow: hidden; width: auto; height: 240px;">
+                        <li class="list-group list-group-divider scroller" data-height="240px" data-color="#71808f"
+                            style="overflow: hidden; width: auto; height: 240px;">
+                            <div>
+                                {% for message in messages %}
+                                    <a class="list-group-item">
+                                    <div class="media">
+                                        <div class="media-img">
+                                            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                                <span class="badge badge-success badge-big">
+                                                    <i class="fa fa-check"></i>
+                                                </span>
+                                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                                <span class="badge badge-danger badge-big">
+                                                    <i class="fa fa-bolt"></i>
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="media-body">
+                                            <div class="font-13">{{ message }}</div>
+                                    </div>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </li>
+                        <div class="slimScrollBar"
+                             style="background: rgb(113, 128, 143); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 233.198px;"></div>
+                        <div class="slimScrollRail"
+                             style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.9; z-index: 90; right: 1px;"></div>
+                    </div>
+                </ul>
+            </li>
             <li class="dropdown dropdown-user">
                 <a class="nav-link dropdown-toggle link" data-toggle="dropdown">
                     <img src="{% static 'img/admin-avatar.png' %}"/>
