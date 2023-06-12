@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-title">Уведомления</h1>
+                </div>
+            </div>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="ibox">
+                        <div class="ibox-body" style="">
+                            {% for item in notifications %}
+                                {% if item.level == 'success' %}
+                                    <div class="alert alert-success">
+                                        <strong>{{ item.get_level_display }}! {{ item.created_at }} - </strong>
+                                        {{ item.message }}
+                                    </div>
+                                {% elif item.level == 'error' %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ item.get_level_display }}! {{ item.created_at }} - </strong>
+                                        {{ item.message }}
+                                    </div>
+                                {% elif item.level == 'warning' %}
+                                    <div class="alert alert-warning">
+                                        <strong>{{ item.get_level_display }}! {{ item.created_at }} - </strong>
+                                        {{ item.message }}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        <strong>{{ item.get_level_display }}! {{ item.created_at }}</strong>
+                                        {{ item.message }}
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
