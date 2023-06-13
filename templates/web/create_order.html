@@ -1,10 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <h1 class="page-title">Обновление склада {{ location.name }}</h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'orders' %}">Отчеты</a>
+                </li>
+                <li class="breadcrumb-item">Сформировать отчет</li>
+            </ol>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h3 class="mb-4">Cклад:</h3>
+                                <div class="check-list">
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="locations" value="All">
+                                        <span class="input-span"></span>Все</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="locations" value="none">
+                                        <span class="input-span"></span>Отсутствует</label>
+                                    {% for location in locations %}
+                                        <label class="ui-checkbox">
+                                            <input type="checkbox" name="locations" value="{{ location.id }}">
+                                            <span class="input-span"></span>{{ location.name }}</label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="mb-4">Статус:</h3>
+                                <div class="check-list">
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="status_list" value="all">
+                                        <span class="input-span"></span>Все</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="status_list" value="in_work">
+                                        <span class="input-span"></span>В работе</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="status_list" value="broken">
+                                        <span class="input-span"></span>Сломано</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="status_list" value="under_repair">
+                                        <span class="input-span"></span>В ремонте</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="status_list" value="in_reserve">
+                                        <span class="input-span"></span>В запасе</label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <h3 class="mb-4">Состояние:</h3>
+                                <div class="check-list">
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="all">
+                                        <span class="input-span"></span>Все</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="1">
+                                        <span class="input-span"></span>1</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="2">
+                                        <span class="input-span"></span>2</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="3">
+                                        <span class="input-span"></span>3</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="4">
+                                        <span class="input-span"></span>4</label>
+                                    <label class="ui-checkbox">
+                                        <input type="checkbox" name="state_list" value="5">
+                                        <span class="input-span"></span>5</label>
+                                </div>
+                            </div>
+                        </div>
+                        {% csrf_token %}
+                        <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Сформировать отчет</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
