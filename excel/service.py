@@ -2,6 +2,7 @@ import logging
 import os
 import pandas as pd
 
+from datetime import datetime
 from django.conf import settings
 from excel.resources import AssetExcel
 
@@ -56,8 +57,7 @@ def handle_uploaded_file(file) -> str:
     :return: путь загруженного файла
     """
     path = "media/uploads/"
-    if not os.path.exists(path):
-        os.makedirs(path)
+    check_path(path=path)
 
     path += f"{file}"
 
@@ -66,3 +66,42 @@ def handle_uploaded_file(file) -> str:
             destination.write(chunk)
 
     return f"{path}"
+
+
+def check_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
+
+def create_order(order_id, asset_list: list):
+    """ Создание файла отчета
+    :param order_id: id отчета
+    :param asset_list: список активов
+    :return: путь к файлу отчета
+    """
+    data = {
+        'Наименование': [],
+        'Местоположение': [],
+        'Стоимость': [],
+        'Год закупкки': [],
+        'Статус': [],
+        'Состояние': [],
+    }
+
+    for asset in asset_list:
+        location_name = None if not asset.location else asset.location.name
+        data.get('Наименование').append(asset.name)
+        data.get('Местоположение').append(location_name)
+        data.get('Стоимость').append(asset.price)
+        data.get('Год закупкки').append(asset.year_of_purchase.year)
+        data.get('Статус').append(asset.status)
+        data.get('Состояние').append(asset.state)
+    df = pd.DataFrame(data)
+
+    path = "media/orders/"
+    check_path(path=path)
+    name = datetime.now().strftime("%Y-%m-%d") + f"_{order_id}"
+    path += f'{name}.xlsx'
+    df.to_excel(path)
+
+    return path

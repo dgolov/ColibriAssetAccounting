@@ -74,11 +74,16 @@ class AssetImage(models.Model):
 class Order(models.Model):
     """ Отчеты
     """
-    file = models.FileField(upload_to="files", verbose_name="Файл")
+    file_path = models.CharField(max_length=256, verbose_name="Путь к файлу отчета", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
 
     def __str__(self):
-        return self.created_at
+        return f"{self.created_at}"
+
+    def get_file_name(self):
+        file_name = None if not self.file_path else self.file_path.split('/')[-1]
+        return file_name
 
     class Meta:
         verbose_name = "Отчет"

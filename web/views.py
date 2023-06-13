@@ -490,18 +490,25 @@ class OrderList(UserMixin, ListView):
         return context
 
 
-class CreateOrder(UserMixin, CreateView):
+class CreateOrder(UserMixin, OrderMixin, View):
     """ Формировпние и загрузка отчета
     """
-    # template_name = 'web/create_order.html'
+    template_name = 'web/create_order.html'
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(CreateOrder, self).get_context_data()
-        context['title'] = 'Создание отчета'
-        return context
+    @staticmethod
+    def get_context_data():
+        locations = Location.objects.all()
+        return {
+            'title': 'Создание отчета',
+            'locations': locations
+        }
 
-    def post(self, request, *args, **kwargs):
-        super(CreateOrder, self).post(request, *args, **kwargs)
+    def get(self, *args, **kwargs):
+        return render(self.request, self.template_name, self.get_context_data())
+
+    def post(self, *args, **kwargs):
+        self.parse_request_data(request=self.request)
+        return HttpResponseRedirect('/orders')
 
 
 class AssetsImport(UserMixin, View):

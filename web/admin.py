@@ -39,8 +39,9 @@ class LocationAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     """ Админ панель отчетов
     """
-    list_display = ['id', 'file', 'created_at']
-    list_display_links = ['id', 'file']
+    list_display = ['id', 'file_path', 'created_at', 'user']
+    list_display_links = ['id', 'file_path']
+    list_filter = ['user']
 
 
 @admin.register(History)
