@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from typing import Union
-from web.models import Asset, History, Location
+from web.models import Asset, History, Location, Order
 from web.services import connect_to_redis
+from excel import create_order
 
 import logging
 
@@ -108,4 +109,29 @@ class AssetMixin:
                 new_status=new_asset.status,
                 event_name="Изменение статуса"
             )
+
+
+class OrderMixin:
+    @staticmethod
+    def parse_request_data(request):
+        asset_list = Asset.objects.all()
+
+        locations = request.POST.get("locations")
+        status_list = request.POST.get("status_list")
+        state_list = request.POST.get("state_list")
+
+        if locations and "none" in locations:
+            asset_list = asset_list.filter(location=None)
+        elif locations and "all" not in locations:
+            locations = list([int(location) for location in locations])
+            asset_list = asset_list.filter(location_id__in=locations)
+        if status_list and "all" not in state_list:
+            asset_list = asset_list.filter(status__in=status_list)
+        if state_list and "all" not in state_list:
+            state_list = list([int(item) for item in state_list])
+            asset_list = asset_list.filter(state__in=state_list)
+
+        order = Order.objects.create(user=request.user)
+        order.file_path = create_order(order_id=order.id, asset_list=asset_list)
+        order.save()
 
