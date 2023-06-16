@@ -79,6 +79,7 @@ def create_order(order_id, asset_list: list):
     :param asset_list: список активов
     :return: путь к файлу отчета
     """
+    logger.info(f"[Parse excel] Create order {order_id}")
     data = {
         'Наименование': [],
         'Местоположение': [],
