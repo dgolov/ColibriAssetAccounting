@@ -128,37 +128,41 @@ REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
 
 # Logging settings
 
+if not os.path.exists("./logs/"):
+    os.mkdir("./logs/")
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'console': {
-            'format': '%(asctime)s - %(levelname)-8s %(message)s'
+            'format': os.environ.get('LOGGING_FORMAT')
         },
         'file': {
-            'format': '%(asctime)s - %(levelname)-8s %(message)s'
+            'format': os.environ.get('LOGGING_FORMAT')
         }
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': os.environ.get('LOGGING_LEVEL'),
             'class': 'logging.StreamHandler',
             'formatter': 'console'
         },
         'file': {
-            'level': 'INFO',
+            'level': os.environ.get('LOGGING_LEVEL'),
             'class': 'logging.FileHandler',
             'formatter': 'file',
-            'filename': 'app.log'
+            'filename': os.environ.get('LOGGING_PATH')
         }
     },
     'loggers': {
         'main': {
-            'level': 'DEBUG',
+            'level': os.environ.get('LOGGING_LEVEL'),
             'handlers': ['console', 'file']
         }
     }
 }
+
 
 # Формат загружаемого excel файда
 
