@@ -29,7 +29,7 @@ def add_message(request, level, message):
     }
     message_level = level_map.get(level)
     messages.add_message(request, message_level, message)
-    Notifications.objects.create(message=message, level=level)
+    Notifications.objects.create(message=message, level=level, user=request.user)
 
 
 class MainView(View):
