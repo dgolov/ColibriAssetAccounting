@@ -14,4 +14,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt && mkdir /home/
 
 COPY . .
 
-RUN python manage.py collectstatic --noinput && python manage.py migrate
+RUN mkdir ./logs/
+
+RUN python manage.py collectstatic --noinput
+
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]

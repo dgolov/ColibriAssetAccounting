@@ -10,3 +10,4 @@ __pycache__
 nginx/
 postgres/
 Dockerfile
+logs/

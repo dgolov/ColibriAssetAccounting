@@ -1,19 +1,32 @@
 version: '3.8'
 
 services:
+  db:
+    container_name: postgres_container
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.db
   web:
     container_name: web_container
     build:
       context: ./
       dockerfile: Dockerfile
-    command: sh -c "gunicorn ColibriAssetAccounting.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && gunicorn ColibriAssetAccounting.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
+      - /home/dgolov:/home/app/logs
     expose:
       - 8000
+    depends_on:
+      - db
     links:
       - redis
+      - db
   nginx:
     container_name: nginx_container
     build: ./nginx
@@ -32,15 +45,6 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
-  db:
-    container_name: postgres_container
-    build:
-      context: ./postgres
-      dockerfile: Dockerfile
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
-    env_file:
-      - ./.env.db
 volumes:
   postgres_data:
   static_volume:

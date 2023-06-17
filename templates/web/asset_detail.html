@@ -60,12 +60,18 @@
                         </div>
                         <div>
                             <div class="m-b-5 font-bold">Местоположение</div>
-                            <div>{{ asset.location.name }}</div>
-                            <ul class="list-unstyled m-t-10">
-                                <li class="m-b-5">г. {{ asset.location.city }}</li>
-                                <li class="m-b-5">{{ asset.location.address }}</li>
-                                <li>{{ asset.location.phone }}</li>
-                            </ul>
+                            {% if asset.location %}
+                                <div>{{ asset.location.name }}</div>
+                                <ul class="list-unstyled m-t-10">
+                                    {% if asset.location.city %}
+                                        <li class="m-b-5">г. {{ asset.location.city }}</li>
+                                    {% endif %}
+                                    <li class="m-b-5">{{ asset.location.address }}</li>
+                                    <li>{{ asset.location.phone }}</li>
+                                </ul>
+                            {% else %}
+                                <p>Не указано</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
