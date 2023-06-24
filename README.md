@@ -42,6 +42,19 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 REDIS_PASSWORD=some_password
 ALLOWED_HOSTS=0.0.0.0,127.0.0.1
+UPLOAD_FORMAT=Наименование,Метоположение,Стоимость,Год закупки,Статус,Состояние
+UPLOAD_FIELDS=name,location,price,year_of_purchase,status,state
+LOGGING_FORMAT=%(asctime)s - %(levelname)-8s %(message)s
+LOGGING_PATH=./logs/app.log
+LOGGING_LEVEL=INFO
+```
+
+### Config db example (.env.db file)
+
+```
+DB_DATABASE=dbname
+POSTGRES_USER=dbuser
+POSTGRES_PASSWORD=dbpassword
 ```
 
 ## Used technologies

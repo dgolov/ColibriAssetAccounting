@@ -5,6 +5,7 @@ db.sqlite3
 app.log
 README.md
 .gitignore
+.gitatributes
 .idea/
 __pycache__
 nginx/
