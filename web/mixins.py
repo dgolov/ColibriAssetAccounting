@@ -112,8 +112,14 @@ class AssetMixin:
 
 
 class OrderMixin:
+    """ Миксин методов для работы с отчетами
+    """
     @staticmethod
-    def parse_request_data(request):
+    def parse_request_data(request) -> None:
+        """ Парсинг даных запроса для составления отчета
+        :param request: http запрос
+        :return:
+        """
         asset_list = Asset.objects.all()
 
         locations = request.POST.get("locations")
@@ -134,4 +140,3 @@ class OrderMixin:
         order = Order.objects.create(user=request.user)
         order.file_path = create_order(order_id=order.id, asset_list=asset_list)
         order.save()
-

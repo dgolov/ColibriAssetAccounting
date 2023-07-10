@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from django.http import HttpResponseRedirect
-from excel import parse_import, handle_uploaded_file, create_order
+from excel import parse_import, handle_uploaded_file
 from redis.exceptions import ConnectionError
 from web.models import Asset, AssetImage, Location, Order, History, Notifications
 from web import forms

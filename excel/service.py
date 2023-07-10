@@ -68,7 +68,12 @@ def handle_uploaded_file(file) -> str:
     return f"{path}"
 
 
-def check_path(path):
+def check_path(path: str) -> NotImplemented:
+    """ Проверка существования папки для сохранения отчетов,
+        если не существует, папка создается
+    :param path: путь к папке
+    :return:
+    """
     if not os.path.exists(path):
         os.makedirs(path)
 

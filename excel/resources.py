@@ -62,23 +62,45 @@ class AssetExcel(AssetExcelBase):
             method(value)
 
     def set_location(self, location) -> None:
+        """ Установка склада
+        :param location: новое значение склада
+        :return:
+        """
         logger.debug(f'[Excel.Asset.set_location] Set location {location} for asset {self.name}')
         self.location = location
 
     def set_price(self, price) -> None:
+        """ Установка цены
+        :param price: новое значение цены
+        :return:
+        """
         logger.debug(f'[Excel.Asset.set_price] Set price {price} for asset {self.name}')
         self.price = price
 
     def set_status(self, status) -> None:
+        """ Установка статуса
+        :param status: новое значение статуса
+        :return:
+        """
         logger.debug(f'[Excel.Asset.set_status] Set status {status} for asset {self.name}')
         self.status = status
 
     def set_state(self, state) -> None:
+        """ Установка состояния
+        :param state: новое значение состояния
+        :return:
+        """
         logger.debug(f'[Excel.Asset.set_state] Set state {state} for asset {self.name}')
         self.state = state
 
     def set_year_of_purchase(self, year_of_purchase) -> None:
-        logger.debug(f'[Excel.Asset.set_year_of_purchase] Set year of purchase {year_of_purchase} for asset {self.name}')
+        """ Установка года закупки
+        :param year_of_purchase: новое значение года закупки
+        :return:
+        """
+        logger.debug(
+            f'[Excel.Asset.set_year_of_purchase] Set year of purchase {year_of_purchase} for asset {self.name}'
+        )
         self.year_of_purchase = date(year=year_of_purchase, month=1, day=1)
 
     @staticmethod
