@@ -4,6 +4,8 @@ from web import models
 
 
 class TestAsset(TestCase):
+    """ Ткестирование модели активов
+    """
     def setUp(self) -> None:
         models.Asset.objects.create(
             name="test",
