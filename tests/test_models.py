@@ -4,6 +4,8 @@ from web import models
 
 
 class TestAsset(TestCase):
+    """ Ткестирование модели активов
+    """
     def setUp(self) -> None:
         models.Asset.objects.create(
             name="test",
@@ -23,3 +25,31 @@ class TestAsset(TestCase):
     def test_asset_description(self):
         asset = models.Asset.objects.get(name="test")
         self.assertEqual(asset.description, "Test test")
+
+
+class TestLocation(TestCase):
+    """ Ткестирование модели складов
+    """
+    def setUp(self) -> None:
+        models.Location.objects.create(
+            name="test",
+            city="New York",
+            address="Test test",
+            description="Test description"
+        )
+
+    def test_location_str(self):
+        location = models.Location.objects.get(name="test")
+        self.assertEqual(location.__str__(), "test")
+        self.assertEqual(location.city, "New York")
+        self.assertEqual(location.address, "Test test")
+
+    def test_location_description(self):
+        location = models.Location.objects.get(name="test")
+        self.assertEqual(location.description, "Test description")
+
+    def test_update_location(self):
+        location = models.Location.objects.get(name="test")
+        location.address = "Test"
+        location.save()
+        self.assertEqual(location.address, "Test")
