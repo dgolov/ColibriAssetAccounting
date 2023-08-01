@@ -11,4 +11,4 @@ then
   echo "Postgres started"
 fi
 
-exec "$@"%
+exec "$@"
