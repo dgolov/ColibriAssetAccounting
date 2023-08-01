@@ -17,5 +17,6 @@ COPY . .
 RUN mkdir ./logs/
 
 RUN python manage.py collectstatic --noinput
+RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
