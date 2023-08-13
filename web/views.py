@@ -304,6 +304,8 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
             self.save_old_asset_data(asset=asset)
         except ConnectionError as e:
             logger.error(f"[UpdateAsset GET] Redis connection error - {e}")
+        except Exception as e:
+            logger.error(f"[UpdateAsset GET] Save to redis error - {e}")
         return context
 
     def form_valid(self, form):
