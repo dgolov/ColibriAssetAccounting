@@ -56,6 +56,7 @@ class CreateAssetForm(forms.ModelForm):
         widget=forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Введите цену актива'}
         ),
+        required=False,
         label="Стоимость"
     )
     status = forms.CharField(
@@ -71,6 +72,13 @@ class CreateAssetForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         ),
         label="Состояние"
+    )
+    ozon_slug = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Ссылка для парсинга цены'}
+        ),
+        required=False,
+        label="Ссылка на ozon"
     )
 
     class Meta:
