@@ -41,11 +41,12 @@ class Asset(models.Model):
     year_of_purchase = models.DateField(verbose_name="Дата покупки")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата и время обновления")
-    price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7)
+    price = models.DecimalField(verbose_name="Стоимость", decimal_places=2, max_digits=7, blank=True, null=True)
     state = models.IntegerField(verbose_name="Состояние", choices=STATE_CHOICES)
     status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES)
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     auto_update_price = models.BooleanField(default=False, verbose_name="Автообновление стоимости")
+    ozon_slug = models.SlugField(verbose_name="Ссылка на ozon", blank=True, null=True)
 
     def __str__(self):
         return self.name

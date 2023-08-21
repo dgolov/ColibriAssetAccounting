@@ -32,11 +32,16 @@ class AssetMixin:
         if not self.r:
             return
 
-        self.r.set(f'{asset.pk}_name', asset.name, 120)
-        self.r.set(f'{asset.pk}_location', asset.location.pk, 120)
-        self.r.set(f'{asset.pk}_price', f"{asset.price}", 120)
-        self.r.set(f'{asset.pk}_state', f"{asset.state}", 120)
-        self.r.set(f'{asset.pk}_status', f"{asset.status}", 120)
+        if asset.name:
+            self.r.set(f'{asset.pk}_name', asset.name, 120)
+        if asset.location:
+            self.r.set(f'{asset.pk}_location', asset.location.pk, 120)
+        if asset.price:
+            self.r.set(f'{asset.pk}_price', f"{asset.price}", 120)
+        if asset.state:
+            self.r.set(f'{asset.pk}_state', f"{asset.state}", 120)
+        if asset.status:
+            self.r.set(f'{asset.pk}_status', f"{asset.status}", 120)
 
         logger.info(f"[AssetMixin] Save redis data for asset if {asset.pk}")
 
