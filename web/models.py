@@ -46,7 +46,8 @@ class Asset(models.Model):
     status = models.CharField(max_length=256, verbose_name='Статус', choices=STATUS_CHOICES)
     is_active = models.BooleanField(default=True, verbose_name="Активный")
     auto_update_price = models.BooleanField(default=False, verbose_name="Автообновление стоимости")
-    ozon_slug = models.SlugField(verbose_name="Ссылка на ozon", blank=True, null=True)
+    ozon_slug = models.CharField(max_length=256, verbose_name="Ссылка на ozon", blank=True, null=True)
+    count = models.PositiveIntegerField(verbose_name="Количество")
 
     def __str__(self):
         return self.name

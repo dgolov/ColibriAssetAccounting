@@ -80,11 +80,18 @@ class CreateAssetForm(forms.ModelForm):
         required=False,
         label="Ссылка на ozon"
     )
+    count = forms.IntegerField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Введите цену количество'}
+        ),
+        label="Количество"
+    )
 
     class Meta:
         model = Asset
         fields = (
-            'name', 'description', 'location', 'year_of_purchase', 'price', 'state', 'status'
+            'name', 'description', 'location', 'year_of_purchase',
+            'price', 'state', 'status', 'ozon_slug', 'count'
         )
 
 
@@ -129,7 +136,8 @@ class UpdateAssetForm(CreateAssetForm):
     class Meta:
         model = Asset
         fields = (
-            'name', 'description', 'location', 'year_of_purchase', 'price', 'state', 'status', 'is_active'
+            'name', 'description', 'location', 'year_of_purchase', 'price',
+            'state', 'status', 'is_active', 'ozon_slug', 'count'
         )
 
 
