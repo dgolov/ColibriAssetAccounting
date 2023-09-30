@@ -90,6 +90,20 @@
                     <td>Стоимость</td>
                     <td>{{ asset.price }}</td>
                 </tr>
+                <tr>
+                    <td>Количество</td>
+                    <td>{{ asset.count }}</td>
+                </tr>
+                <tr>
+                    <td>Ссылка на товар</td>
+                    <td>
+                        {% if 'http' in asset.ozon_slug  %}
+                            <a href="{{ asset.ozon_slug }}">{{ asset.ozon_slug }}</a>
+                        {% else %}
+                            <a href="https://{{ asset.ozon_slug }}">{{ asset.ozon_slug }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
                 </tbody>
             </table>
             {% if asset.images.all|length > 0 %}
