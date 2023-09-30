@@ -298,6 +298,8 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
                 'status': asset.status,
                 'is_active': asset.is_active,
                 'description': asset.description,
+                'ozon_slug': asset.ozon_slug,
+                'count': asset.count,
             }
         )
         try:
