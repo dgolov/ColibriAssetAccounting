@@ -141,6 +141,16 @@ class UpdateAssetForm(CreateAssetForm):
         )
 
 
+class CloneAssetForm(forms.ModelForm):
+    """ Форма дублирования актива
+    """
+    pass
+
+    class Meta:
+        model = Asset
+        fields = []
+
+
 class LocationForm(forms.ModelForm):
     """ Форма создания и обновления локаций
     """

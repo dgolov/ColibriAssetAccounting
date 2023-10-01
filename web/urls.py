@@ -12,6 +12,7 @@ urlpatterns = [
     path('assets/<int:pk>', views.AssetDetail.as_view(), name='assets_detail'),
     path('assets/<int:pk>/add-image', views.CreateAssertImage.as_view(), name='create_asset_image'),
     path('assets/<int:pk>/remove-image', views.DeleteAssertImage.as_view(), name='delete_asset_image'),
+    path('assets/<int:pk>/clone', views.CloneAssert.as_view(), name='clone_asset'),
     path('assets/create', views.CreateAssert.as_view(), name='create_asset'),
     path('assets/update/<int:pk>', views.UpdateAsset.as_view(), name='update_asset'),
     path('assets/delete/<int:pk>', views.DeleteAssert.as_view(), name='delete_asset'),

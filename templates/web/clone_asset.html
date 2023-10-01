@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="page-content fade-in-up">
+        <div class="page-heading">
+            <h1 class="page-title">Дублирование актива <span class="font-weight-bold">{{ asset }}</span></h1>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'assets' %}">Активы</a>
+                </li>
+                <li class="breadcrumb-item">Дублирование актива {{ asset }}</li>
+            </ol>
+        </div>
+        <div class="page-content fade-in-up">
+            <div class="ibox">
+                <div class="ibox-body">
+                    <p class="mb-5">Актив <span class="font-weight-bold">{{ asset }}</span> будет продублирован</p>
+                    <table class="table table-striped no-margin table-invoice">
+                        <tbody>
+                        <tr>
+                            <td>Наименование</td>
+                            <td>{{ asset.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Описание</td>
+                            <td>{{ asset.description }}</td>
+                        </tr>
+                        <tr>
+                            <td>Местоположение</td>
+                            <td>{{ asset.location }}</td>
+                        </tr>
+                        <tr>
+                            <td>Дата покупки</td>
+                            <td>{{ asset.year_of_purchase }}</td>
+                        </tr>
+                        <tr>
+                            <td>Стоимость</td>
+                            <td>{{ asset.price }}</td>
+                        </tr>
+                        <tr>
+                            <td>Стасус</td>
+                            <td>{{ asset.get_status_display }}</td>
+                        </tr>
+                        <tr>
+                            <td>Состояние</td>
+                            <td>{{ asset.get_state_display }}</td>
+                        </tr>
+                        <tr>
+                            <td>Стоимость</td>
+                            <td>{{ asset.price }}</td>
+                        </tr>
+                        <tr>
+                            <td>Количество</td>
+                            <td>{{ asset.count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Ссылка на товар</td>
+                            <td>
+                                {% if 'http' in asset.ozon_slug %}
+                                    <a href="{{ asset.ozon_slug }}">{{ asset.ozon_slug }}</a>
+                                {% else %}
+                                    <a href="https://{{ asset.ozon_slug }}">{{ asset.ozon_slug }}</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-info btn-block mt-5 mb-3" type="submit">Дублировать актив</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

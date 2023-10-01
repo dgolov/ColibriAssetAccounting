@@ -3,7 +3,7 @@
 {% block content %}
     <div class="page-heading">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <h1 class="page-title">{{ asset.name }}</h1>
             </div>
             <div class="col-md-2">
@@ -16,6 +16,12 @@
                 <a type="button" href="/assets/update/{{ asset.pk }}"
                    class="btn btn-outline-primary px-5 mt-5" style="float: right;">
                     Редактировать
+                </a>
+            </div>
+            <div class="col-md-2">
+                <a type="button" href="/assets/{{ asset.pk }}/clone"
+                   class="btn btn-outline-primary px-5 mt-5" style="float: right;">
+                    Дублировать
                 </a>
             </div>
             <div class="col-md-2">
