@@ -354,7 +354,7 @@ class CloneAssert(UserMixin, CreateView):
         logger.info(f"Cloning asset {self.get_object()}")
         try:
             asset = self.get_object()
-            Asset.objects.create(
+            new_asset = Asset.objects.create(
                 name=asset.name,
                 description=asset.description,
                 location=asset.location,
@@ -367,6 +367,10 @@ class CloneAssert(UserMixin, CreateView):
                 ozon_slug=asset.ozon_slug,
                 count=asset.count,
             )
+            new_asset.images.add(*asset.images.all())
+            new_asset.history.add(*asset.history.all())
+            new_asset.save()
+            History.objects.create(asset=new_asset, event_name="Дублирование актива")
             add_message(
                 self.request,
                 level='success', message=f'Актив {self.get_object()} успешно продублирован.'
