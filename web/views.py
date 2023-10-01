@@ -351,20 +351,33 @@ class CloneAssert(UserMixin, CreateView):
         return context
     
     def post(self, request, *args, **kwargs):
-        asset = self.get_object()
-        Asset.objects.create(
-            name=asset.name,
-            description=asset.description,
-            location=asset.location,
-            year_of_purchase=asset.year_of_purchase,
-            price=asset.price,
-            state=asset.state,
-            status=asset.status,
-            is_active=asset.is_active,
-            auto_update_price=asset.auto_update_price,
-            ozon_slug=asset.ozon_slug,
-            count=asset.count,
-        )
+        logger.info(f"Cloning asset {self.get_object()}")
+        try:
+            asset = self.get_object()
+            Asset.objects.create(
+                name=asset.name,
+                description=asset.description,
+                location=asset.location,
+                year_of_purchase=asset.year_of_purchase,
+                price=asset.price,
+                state=asset.state,
+                status=asset.status,
+                is_active=asset.is_active,
+                auto_update_price=asset.auto_update_price,
+                ozon_slug=asset.ozon_slug,
+                count=asset.count,
+            )
+            add_message(
+                self.request,
+                level='success', message=f'Актив {self.get_object()} успешно продублирован.'
+            )
+        except Exception as e:
+            logger.error(f"Clone asset {self.get_object()} error - {e}")
+            add_message(
+                self.request,
+                level='error',
+                message=f"Ошибка дублирования актива {self.get_object()} - {e}"
+            )
         return HttpResponseRedirect(f'/assets')
 
 
