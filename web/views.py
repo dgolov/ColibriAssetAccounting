@@ -337,6 +337,37 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
         super(UpdateAsset, self).put(*args, **kwargs)
 
 
+class CloneAssert(UserMixin, CreateView):
+    """ Дублирование актива
+    """
+    model = Asset
+    template_name = 'web/clone_asset.html'
+    form_class = forms.CloneAssetForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CloneAssert, self).get_context_data()
+        context['title'] = 'Дублирование актива'
+        context['asset'] = self.get_object()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        asset = self.get_object()
+        Asset.objects.create(
+            name=asset.name,
+            description=asset.description,
+            location=asset.location,
+            year_of_purchase=asset.year_of_purchase,
+            price=asset.price,
+            state=asset.state,
+            status=asset.status,
+            is_active=asset.is_active,
+            auto_update_price=asset.auto_update_price,
+            ozon_slug=asset.ozon_slug,
+            count=asset.count,
+        )
+        return HttpResponseRedirect(f'/assets')
+
+
 class DeleteAssert(UserMixin, DeleteView):
     """ Удаление актива
     """
