@@ -3,6 +3,7 @@ version: '3.3'
 services:
   db:
     container_name: postgres_container
+    image: db:0.3.0
     build:
       context: ./postgres
       dockerfile: Dockerfile
@@ -14,6 +15,7 @@ services:
 
   web:
     container_name: web_container
+    image: web:0.3.0
     build:
       context: ./
       dockerfile: Dockerfile
@@ -33,6 +35,7 @@ services:
 
   nginx:
     container_name: nginx_container
+    image: nginx:0.3.0
     build: ./nginx
     ports:
       - 8000:80
