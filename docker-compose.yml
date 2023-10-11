@@ -10,6 +10,8 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.db
+    restart: always
+
   web:
     container_name: web_container
     build:
@@ -27,6 +29,8 @@ services:
     links:
       - redis
       - db
+    restart: always
+
   nginx:
     container_name: nginx_container
     build: ./nginx
@@ -37,6 +41,8 @@ services:
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
+    restart: always
+
   redis:
     container_name: redis_container
     image: "redis:alpine"
