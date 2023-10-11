@@ -20,10 +20,12 @@ services:
       context: ./
       dockerfile: Dockerfile
     command: sh -c "python manage.py migrate && gunicorn ColibriAssetAccounting.wsgi:application --bind 0.0.0.0:8000"
+    env_file:
+      - ./.env
     volumes:
       - static_volume:/home/app/web/static
       - media_volume:/home/app/web/media
-      - /home/dgolov:/home/app/logs
+      - ${LOGGING_SERVER_PATH}:/home/app/web/logs/app.log:rw
     expose:
       - 8000
     depends_on:
