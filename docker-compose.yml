@@ -3,7 +3,7 @@ version: '3.3'
 services:
   db:
     container_name: postgres_container
-    image: db:0.3.0
+    image: db:0.4.0
     build:
       context: ./postgres
       dockerfile: Dockerfile
@@ -37,7 +37,7 @@ services:
 
   nginx:
     container_name: nginx_container
-    image: nginx:0.3.0
+    image: nginx:0.4.0
     build: ./nginx
     ports:
       - ${WEB_APP_PORT}:80
