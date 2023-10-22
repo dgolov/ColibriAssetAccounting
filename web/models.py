@@ -48,6 +48,14 @@ class Asset(models.Model):
     auto_update_price = models.BooleanField(default=False, verbose_name="Автообновление стоимости")
     ozon_slug = models.CharField(max_length=256, verbose_name="Ссылка на ozon", blank=True, null=True)
     count = models.PositiveIntegerField(verbose_name="Количество")
+    parent = models.ForeignKey(
+        "Asset",
+        on_delete=models.SET_NULL,
+        verbose_name="Родительский актив",
+        related_name="children_list",
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
