@@ -84,6 +84,14 @@
             </div>
             <table class="table table-striped no-margin table-invoice">
                 <tbody>
+                {% if asset.parent %}
+                    <tr>
+                        <td>Родительский актив</td>
+                        <td>
+                            <a href="/assets/{{ asset.parent.pk }}">{{ asset.parent }}</a>
+                        </td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td>Стасус</td>
                     <td>{{ asset.get_status_display }}</td>
