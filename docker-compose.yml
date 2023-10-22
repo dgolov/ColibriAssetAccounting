@@ -15,7 +15,7 @@ services:
 
   web:
     container_name: web_container
-    image: web:0.3.0
+    image: web:0.4.0
     build:
       context: ./
       dockerfile: Dockerfile
