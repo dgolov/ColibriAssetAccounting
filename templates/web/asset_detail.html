@@ -120,6 +120,53 @@
                 </tr>
                 </tbody>
             </table>
+            <div class="mt-5">
+                <h4 class="mb-4">Дочерние активы</h4>
+                <table class="table table-striped table-bordered table-hover"
+                       id="example-table"
+                       cellspacing="0"
+                       width="100%">
+                    <thead>
+                    <tr>
+                        <th>Наименование</th>
+                        <th>Местоположение</th>
+                        <th>Стоимость</th>
+                        <th>Год закупки</th>
+                        <th>Статус</th>
+                        <th>Состояние</th>
+                        <th>Количество</th>
+                    </tr>
+                    </thead>
+                    {% if children_list.all|length > 15 %}
+                        <tfoot>
+                        <tr>
+                            <th>Наименование</th>
+                            <th>Местоположение</th>
+                            <th>Стоимость</th>
+                            <th>Год закупки</th>
+                            <th>Статус</th>
+                            <th>Состояние</th>
+                            <th>Количество</th>
+                        </tr>
+                        </tfoot>
+                    {% endif %}
+                    <tbody>
+                    {% for children in asset.children_list.all %}
+                        <tr>
+                            <td>
+                                <a href="/assets/{{ children.pk }}">{{ children.name }}</a>
+                            </td>
+                            <td>{{ children.location.name }}</td>
+                            <td>{{ children.price }}</td>
+                            <td>{{ children.year_of_purchase.year }}</td>
+                            <td>{{ children.get_status_display }}</td>
+                            <td>{{ children.state }}</td>
+                            <td>{{ children.count }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% if asset.images.all|length > 0 %}
                 <div id="carouselExampleControls" class="carousel slide mt-5" data-ride="carousel">
                 <div class="carousel-inner">
