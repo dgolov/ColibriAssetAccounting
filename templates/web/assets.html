@@ -21,11 +21,11 @@
                 </div>
             </div>
             <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard' %}">Главная</a>
-            </li>
-            <li class="breadcrumb-item">Активы</li>
-        </ol>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">Активы</li>
+            </ol>
             <div class="row mx-1 my-0">
                 <a type="button" href="/assets"
                    class="btn btn-primary px-5 mt-5 mx-1" style="float: right;">
@@ -73,6 +73,12 @@
                             <tr>
                                 <td>
                                     <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
+                                    {% if asset.children_list.all|length > 0 %}
+                                        <button class="show-btn" data-target="child-{{ asset.pk }}">
+                                            Показать
+                                        </button>
+                                        <button class="hide-btn" style="display: none;">Скрыть</button>
+                                    {% endif %}
                                 </td>
                                 <td>{{ asset.location.name }}</td>
                                 <td>{{ asset.price }}</td>
@@ -81,6 +87,21 @@
                                 <td>{{ asset.state }}</td>
                                 <td>{{ asset.count }}</td>
                             </tr>
+                            {% if asset.children_list.all|length > 0 %}
+                                {% for children in asset.children_list.all %}
+                                    <tr class="child-row" data-child="child-{{ asset.pk }}">
+                                        <td>
+                                            <a href="/assets/{{ children.pk }}">{{ children.name }}</a>
+                                        </td>
+                                        <td>{{ children.location.name }}</td>
+                                        <td>{{ children.price }}</td>
+                                        <td>{{ children.year_of_purchase.year }}</td>
+                                        <td>{{ children.get_status_display }}</td>
+                                        <td>{{ children.state }}</td>
+                                        <td>{{ children.count }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -89,4 +110,10 @@
             </div>
         </div>
     </div>
+    <style>
+        tr[class^="child-"] {
+            display: none;
+        }
+    </style>
+    <script src="{% static 'js/assetButtonsMixin.js' %}" type="text/javascript"></script>
 {% endblock %}
