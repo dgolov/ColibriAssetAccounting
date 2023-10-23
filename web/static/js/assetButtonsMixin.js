@@ -11,8 +11,14 @@ showButtons.forEach(showButton => {
             showButton.style.display = 'none';
 
             const hideButton = document.createElement('button');
-            hideButton.classList.add('hide-btn');
-            hideButton.textContent = 'Скрыть';
+            hideButton.classList.add(
+                'hide-btn',
+                'btn',
+                'btn-warning',
+                'float-right',
+                'width30'
+            );
+            hideButton.textContent = '-';
 
             hideButton.addEventListener('click', () => {
                 childRow.style.display = 'none';

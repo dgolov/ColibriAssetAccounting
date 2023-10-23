@@ -74,10 +74,10 @@
                                 <td>
                                     <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
                                     {% if asset.children_list.all|length > 0 %}
-                                        <button class="show-btn" data-target="child-{{ asset.pk }}">
-                                            Показать
+                                        <button class="show-btn btn btn-primary float-right width30"
+                                                data-target="child-{{ asset.pk }}">
+                                            +
                                         </button>
-                                        <button class="hide-btn" style="display: none;">Скрыть</button>
                                     {% endif %}
                                 </td>
                                 <td>{{ asset.location.name }}</td>
@@ -113,6 +113,10 @@
     <style>
         tr[class^="child-"] {
             display: none;
+        }
+
+        .width30 {
+            width: 30px;
         }
     </style>
     <script src="{% static 'js/assetButtonsMixin.js' %}" type="text/javascript"></script>
