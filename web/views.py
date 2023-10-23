@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -8,7 +7,7 @@ from django.views.generic import DetailView, ListView, CreateView, DeleteView, U
 from django.http import HttpResponseRedirect
 from excel import parse_import, handle_uploaded_file
 from redis.exceptions import ConnectionError
-from web.models import Asset, AssetImage, Location, Order, History, Notifications
+from web.models import Asset, AssetImage, Location, Order, History, Notifications, CustomUser
 from web import forms
 from web.mixins import UserMixin, AssetMixin, OrderMixin
 
@@ -44,7 +43,7 @@ class MainView(View):
             "title": " Дашборд",
             "assets_count": Asset.objects.all().count(),
             "location_count": Location.objects.all().count(),
-            "user_count": User.objects.all().count(),
+            "user_count": CustomUser.objects.all().count(),
         }
 
 
@@ -65,9 +64,9 @@ class Auth(View):
             username = auth_form.cleaned_data['username']
             password = auth_form.cleaned_data['password']
             try:
-                user = User.objects.get(email=username)
+                user = CustomUser.objects.get(email=username)
                 username = user.username
-            except User.DoesNotExist as e:
+            except CustomUser.DoesNotExist as e:
                 logger.error(f"[Auth POST] Get user {username} error - {e}")
             user = authenticate(username=username, password=password)
             if user:
