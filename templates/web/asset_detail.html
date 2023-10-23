@@ -151,19 +151,7 @@
                         </tfoot>
                     {% endif %}
                     <tbody>
-                    {% for children in asset.children_list.all %}
-                        <tr>
-                            <td>
-                                <a href="/assets/{{ children.pk }}">{{ children.name }}</a>
-                            </td>
-                            <td>{{ children.location.name }}</td>
-                            <td>{{ children.price }}</td>
-                            <td>{{ children.year_of_purchase.year }}</td>
-                            <td>{{ children.get_status_display }}</td>
-                            <td>{{ children.state }}</td>
-                            <td>{{ children.count }}</td>
-                        </tr>
-                    {% endfor %}
+                    {% include 'inc/childrenRows.html' %}
                     </tbody>
                 </table>
             </div>
