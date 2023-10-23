@@ -90,6 +90,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# User
+
+AUTH_USER_MODEL = 'web.CustomUser'
+
 # Internationalization
 
 LANGUAGE_CODE = 'ru-rus'

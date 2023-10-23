@@ -15,6 +15,11 @@ class UserMixin(LoginRequiredMixin):
     """
     login_url = '/auth'
 
+    @staticmethod
+    def has_permission(request) -> bool:
+        """ Проверяет пользователя на наличие прав суперпользователя """
+        return request.user.is_superuser
+
 
 class AssetMixin:
     """ Миксин функций активов
@@ -126,6 +131,9 @@ class OrderMixin:
         :return:
         """
         asset_list = Asset.objects.all()
+
+        if not request.user.is_superuser:
+            asset_list = asset_list.filter(location=request.user.location)
 
         locations = request.POST.get("locations")
         status_list = request.POST.get("status_list")

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from web.models import Asset, AssetImage, Location, Order, History, Notifications
+from web.models import Asset, AssetImage, Location, Order, History, Notifications, CustomUser
+from django.contrib.auth.admin import UserAdmin
 
 
 admin.site.site_header = 'Административная панель'
@@ -64,3 +65,15 @@ class NotificationsAdmin(admin.ModelAdmin):
     list_display = ['id', 'message', 'level', 'user']
     list_display_links = ['message']
     list_filter = ['level', 'user']
+
+
+class CustomUserAdmin(UserAdmin):
+    """ Админ панель пользователя
+    """
+    list_display = ('username', 'email', 'first_name', 'last_name', 'location')
+    fieldsets = UserAdmin.fieldsets + (
+        (None, {'fields': ('location',)}),
+    )
+
+
+admin.site.register(CustomUser, CustomUserAdmin)

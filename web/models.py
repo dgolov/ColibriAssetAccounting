@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
@@ -17,6 +17,19 @@ class Location(models.Model):
     class Meta:
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса"
+
+
+class CustomUser(AbstractUser):
+    """ Расширенная модель пользователя
+    """
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.SET_NULL,
+        verbose_name="Местоположение",
+        related_name='users',
+        blank=True,
+        null=True
+    )
 
 
 class Asset(models.Model):
@@ -86,7 +99,7 @@ class Order(models.Model):
     """
     file_path = models.CharField(max_length=256, verbose_name="Путь к файлу отчета", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время создания")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="Пользователь")
 
     def __str__(self):
         return f"{self.created_at}"
@@ -166,7 +179,7 @@ class Notifications(models.Model):
     message = models.TextField(verbose_name="Сообщение")
     level = models.CharField(max_length=256, verbose_name='Статус', choices=LEVEL_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата и время сообщения")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="Пользователь")
 
     def __str__(self):
         return f"{self.message}"

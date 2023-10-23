@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -8,7 +7,7 @@ from django.views.generic import DetailView, ListView, CreateView, DeleteView, U
 from django.http import HttpResponseRedirect
 from excel import parse_import, handle_uploaded_file
 from redis.exceptions import ConnectionError
-from web.models import Asset, AssetImage, Location, Order, History, Notifications
+from web.models import Asset, AssetImage, Location, Order, History, Notifications, CustomUser
 from web import forms
 from web.mixins import UserMixin, AssetMixin, OrderMixin
 
@@ -32,7 +31,7 @@ def add_message(request, level, message):
     Notifications.objects.create(message=message, level=level, user=request.user)
 
 
-class MainView(View):
+class MainView(View, UserMixin):
     """ Представление дашборда
     """
     def get(self, *args, **kwargs):
@@ -44,7 +43,7 @@ class MainView(View):
             "title": " Дашборд",
             "assets_count": Asset.objects.all().count(),
             "location_count": Location.objects.all().count(),
-            "user_count": User.objects.all().count(),
+            "user_count": CustomUser.objects.all().count(),
         }
 
 
@@ -65,9 +64,9 @@ class Auth(View):
             username = auth_form.cleaned_data['username']
             password = auth_form.cleaned_data['password']
             try:
-                user = User.objects.get(email=username)
+                user = CustomUser.objects.get(email=username)
                 username = user.username
-            except User.DoesNotExist as e:
+            except CustomUser.DoesNotExist as e:
                 logger.error(f"[Auth POST] Get user {username} error - {e}")
             user = authenticate(username=username, password=password)
             if user:
@@ -151,20 +150,46 @@ class AssetList(UserMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
 
+        asset_query = None
         search = self.request.GET.get('search')
         location_pk = self.request.GET.get('location')
 
         if location_pk:
-            context['assets'] = Asset.objects.filter(location_id=location_pk)
+            asset_query = Asset.objects.filter(
+                location_id=location_pk,
+                is_active=True,
+                parent=None
+            ).order_by('name')
         elif search:
-            context['assets'] = Asset.objects.filter(name__iregex=search)
+            asset_query = Asset.objects.filter(
+                    name__iregex=search,
+                    is_active=True,
+                    parent=None
+                ).order_by('name')
+
+        if asset_query and not self.request.user.is_superuser:
+            asset_query.filter(location=self.request.user.location)
+            
+        if asset_query:
+            context['assets'] = asset_query
 
         context['title'] = 'Активы'
-        context['locations'] = Location.objects.all()
+        
+        if self.request.user.is_superuser:
+            context['locations'] = Location.objects.all()
+        else:
+            context['locations'] = [self.request.user.location]
+            
         return context
 
     def get_queryset(self):
-        return Asset.objects.filter(is_active=True, parent=None).order_by('name')
+        query = Asset.objects.filter(is_active=True, parent=None).order_by('name')
+        if not self.request.user.is_superuser:
+            query = Asset.objects.filter(
+                is_active=True,
+                parent=None
+            ).order_by('name').filter(location=self.request.user.location)
+        return query
 
 
 class AssetDetail(UserMixin, DetailView):
@@ -173,6 +198,11 @@ class AssetDetail(UserMixin, DetailView):
     model = Asset
     template_name = 'web/asset_detail.html'
     context_object_name = 'asset'
+
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+            return HttpResponseRedirect('/assets')
+        return super(AssetDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetDetail, self).get_context_data()
@@ -190,7 +220,7 @@ class CreateAssert(UserMixin, CreateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateAssert, self).get_context_data()
         context['title'] = 'Создание актива'
-        context['form'] = forms.CreateAssetForm
+        context['form'] = forms.CreateAssetForm(user=self.request.user)
         return context
 
     def form_valid(self, form):
@@ -229,6 +259,11 @@ class CreateAssertImage(UserMixin, CreateView):
         context = super(CreateAssertImage, self).get_context_data()
         try:
             asset = Asset.objects.get(pk=self._object_pk)
+            if not self.has_permission(request=self.request) and asset.location != self.request.user.location:
+                logger.warning(
+                    f"There are not enough permissions (User: {self.request.user}) to edit the asset - {asset}"
+                )
+                return {}
         except Asset.DoesNotExist as e:
             logger.error(f"Create asset error - {e}")
             return {}
@@ -261,6 +296,16 @@ class DeleteAssertImage(UserMixin, DeleteView):
     """
     model = AssetImage
 
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+            return HttpResponseRedirect('/assets')
+        return super(DeleteAssertImage, self).get(request, *args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if not self.has_permission(request=self.request):
+            return HttpResponseRedirect('/locations')
+        return super(DeleteAssertImage, self).post(*args, **kwargs)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteAssertImage, self).get_context_data()
         context['title'] = 'Удаление изображения актива'
@@ -279,6 +324,16 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
     template_name = 'web/update_asset.html'
     form_class = forms.UpdateAssetForm
 
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+            return HttpResponseRedirect('/assets')
+        return super(UpdateAsset, self).get(request, *args, **kwargs)
+
+    def put(self, *args, **kwargs):
+        if not self.has_permission(request=self.request):
+            return HttpResponseRedirect('/locations')
+        return super(UpdateAsset, self).post(*args, **kwargs)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateAsset, self).get_context_data()
         try:
@@ -289,6 +344,8 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
             return {}
         context['title'] = f'Обновление актива {asset.name}'
         context['form'] = forms.UpdateAssetForm(
+            object_id=self.get_object().pk,
+            user=self.request.user,
             initial={
                 'name': asset.name,
                 'location': asset.location,
@@ -422,6 +479,12 @@ class LocationList(UserMixin, ListView):
         context['title'] = 'Склады'
         return context
 
+    def get_queryset(self):
+        if self.has_permission(request=self.request):
+            return Location.objects.all()
+        else:
+            return [self.request.user.location]
+
 
 class LocationDetail(UserMixin, DetailView):
     """ Детальное представление локаций
@@ -429,6 +492,11 @@ class LocationDetail(UserMixin, DetailView):
     model = Location
     template_name = 'web/location_detail.html'
     context_object_name = 'location'
+
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        return super(LocationDetail, self).get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationDetail, self).get_context_data()
@@ -442,6 +510,16 @@ class CreateLocation(UserMixin, CreateView):
     template_name = 'web/create_location.html'
     form_class = forms.LocationForm
     success_url = reverse_lazy('locations')
+    
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        return super(CreateLocation, self).get(request, *args, **kwargs)
+        
+    def post(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        return super(CreateLocation, self).post(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CreateLocation, self).get_context_data()
@@ -468,6 +546,16 @@ class UpdateLocation(UserMixin, UpdateView):
     template_name = 'web/update_location.html'
     model = Location
     form_class = forms.LocationForm
+
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        return super(UpdateLocation, self).get(request, *args, **kwargs)
+
+    def put(self, *args, **kwargs):
+        if not self.has_permission(request=self.request):
+            return HttpResponseRedirect('/locations')
+        return super(UpdateLocation, self).post(*args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(UpdateLocation, self).get_context_data()
@@ -512,6 +600,17 @@ class DeleteLocation(UserMixin, DeleteView):
     template_name = 'web/delete_location.html'
     success_url = reverse_lazy('locations')
 
+    def get(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        return super(DeleteLocation, self).get(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        if not self.has_permission(request=request):
+            return HttpResponseRedirect('/locations')
+        add_message(self.request, level='success', message=f'Склад {self.get_object()} успешно удален.')
+        return super(DeleteLocation, self).delete(request, *args, **kwargs)
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(DeleteLocation, self).get_context_data()
         try:
@@ -522,10 +621,6 @@ class DeleteLocation(UserMixin, DeleteView):
             return {}
         context['title'] = f'Удаление склада {location.name}'
         return context
-
-    def delete(self, request, *args, **kwargs):
-        add_message(self.request, level='success', message=f'Склад {self.get_object()} успешно удален.')
-        return super(DeleteLocation, self).delete(request, *args, **kwargs)
 
 
 class OrderList(UserMixin, ListView):
@@ -540,6 +635,11 @@ class OrderList(UserMixin, ListView):
         context = super(OrderList, self).get_context_data()
         context['title'] = 'Отчеты'
         return context
+
+    def get_queryset(self):
+        if not self.request.user.is_superuser:
+            return self.model.objects.filter(user=self.request.user)
+        return super(OrderList, self).get_queryset()
 
 
 class CreateOrder(UserMixin, OrderMixin, View):

@@ -87,13 +87,19 @@ class CreateAssetForm(forms.ModelForm):
         label="Количество"
     )
     parent = forms.ModelChoiceField(
-        queryset=Asset.objects.filter(),
+        queryset=Asset.objects.all(),
         widget=forms.Select(
             attrs={'class': 'form-control'}
         ),
         label="Родительский актив",
         required=False
     )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(CreateAssetForm, self).__init__(*args, **kwargs)
+        if user and not user.is_superuser:
+            self.fields['location'].queryset = Location.objects.filter(id=user.location.id)
 
     class Meta:
         model = Asset
@@ -147,6 +153,15 @@ class UpdateAssetForm(CreateAssetForm):
             'name', 'description', 'location', 'year_of_purchase', 'price',
             'state', 'status', 'is_active', 'ozon_slug', 'count', 'parent'
         )
+
+    def __init__(self, *args, **kwargs):
+        object_id = kwargs.pop('object_id', None)
+        user = kwargs.pop('user', None)
+        super(UpdateAssetForm, self).__init__(*args, **kwargs)
+        if object_id and isinstance(object_id, int):
+            self.fields['parent'].queryset = Asset.objects.exclude(id=object_id).filter(location=user.location)
+        if user and not user.is_superuser:
+            self.fields['location'].queryset = Location.objects.filter(id=user.location.id)
 
 
 class CloneAssetForm(forms.ModelForm):
