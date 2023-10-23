@@ -1,6 +1,6 @@
 # Учет активов ООО Колибри
 
-Приложение учета активов, отображения состояние, местанахождения, истории активов для ООО Колибри
+Приложение учета активов, отображения состояния, местанахождения, истории активов для ООО Колибри
 
 Opensource code
 
@@ -47,6 +47,7 @@ UPLOAD_FIELDS=name,location,price,year_of_purchase,status,state
 LOGGING_FORMAT=%(asctime)s - %(levelname)-8s %(message)s
 LOGGING_PATH=./logs/app.log
 LOGGING_LEVEL=INFO
+LOGGING_SERVER_PATH=/var/log/app.log
 ```
 
 ### Config db example (.env.db file)
