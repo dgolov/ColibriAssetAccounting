@@ -16,7 +16,8 @@ class UserMixin(LoginRequiredMixin):
     login_url = '/auth'
 
     @staticmethod
-    def has_permission(request):
+    def has_permission(request) -> bool:
+        """ Проверяет пользователя на наличие прав суперпользователя """
         return request.user.is_superuser
 
 
