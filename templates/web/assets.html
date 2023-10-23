@@ -21,11 +21,11 @@
                 </div>
             </div>
             <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="{% url 'dashboard' %}">Главная</a>
-            </li>
-            <li class="breadcrumb-item">Активы</li>
-        </ol>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">Активы</li>
+            </ol>
             <div class="row mx-1 my-0">
                 <a type="button" href="/assets"
                    class="btn btn-primary px-5 mt-5 mx-1" style="float: right;">
@@ -73,6 +73,12 @@
                             <tr>
                                 <td>
                                     <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
+                                    {% if asset.children_list.all|length > 0 %}
+                                        <button class="show-btn btn btn-primary float-right width30"
+                                                data-target="child-{{ asset.pk }}">
+                                            +
+                                        </button>
+                                    {% endif %}
                                 </td>
                                 <td>{{ asset.location.name }}</td>
                                 <td>{{ asset.price }}</td>
@@ -81,6 +87,9 @@
                                 <td>{{ asset.state }}</td>
                                 <td>{{ asset.count }}</td>
                             </tr>
+                            {% if asset.children_list.all|length > 0 %}
+                                {% include 'inc/childrenRows.html' %}
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -89,4 +98,14 @@
             </div>
         </div>
     </div>
+    <style>
+        tr[class^="child-"] {
+            display: none;
+        }
+
+        .width30 {
+            width: 30px;
+        }
+    </style>
+    <script src="{% static 'js/assetButtonsMixin.js' %}" type="text/javascript"></script>
 {% endblock %}

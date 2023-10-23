@@ -86,12 +86,20 @@ class CreateAssetForm(forms.ModelForm):
         ),
         label="Количество"
     )
+    parent = forms.ModelChoiceField(
+        queryset=Asset.objects.filter(),
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+        ),
+        label="Родительский актив",
+        required=False
+    )
 
     class Meta:
         model = Asset
         fields = (
             'name', 'description', 'location', 'year_of_purchase',
-            'price', 'state', 'status', 'ozon_slug', 'count'
+            'price', 'state', 'status', 'ozon_slug', 'count', 'parent'
         )
 
 
@@ -137,7 +145,7 @@ class UpdateAssetForm(CreateAssetForm):
         model = Asset
         fields = (
             'name', 'description', 'location', 'year_of_purchase', 'price',
-            'state', 'status', 'is_active', 'ozon_slug', 'count'
+            'state', 'status', 'is_active', 'ozon_slug', 'count', 'parent'
         )
 
 

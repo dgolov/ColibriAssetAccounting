@@ -164,7 +164,7 @@ class AssetList(UserMixin, ListView):
         return context
 
     def get_queryset(self):
-        return Asset.objects.filter(is_active=True).order_by('name')
+        return Asset.objects.filter(is_active=True, parent=None).order_by('name')
 
 
 class AssetDetail(UserMixin, DetailView):
