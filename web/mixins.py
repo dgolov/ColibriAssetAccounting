@@ -16,6 +16,11 @@ class UserMixin(LoginRequiredMixin):
     login_url = '/auth'
 
     @staticmethod
+    def has_login(request) -> bool:
+        """ Проверяет авторизован ли пользователь """
+        return not request.user.is_anonymous
+
+    @staticmethod
     def has_permission(request) -> bool:
         """ Проверяет пользователя на наличие прав суперпользователя """
         return request.user.is_superuser
