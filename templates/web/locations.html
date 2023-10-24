@@ -8,10 +8,12 @@
                     <h1 class="page-title">Склады</h1>
                 </div>
                 <div class="col-md-2">
-                    <a type="button" href="{% url 'create_location' %}"
-                       class="btn btn-outline-primary px-5 mt-5" style="float: right;">
-                        Добавить склад
-                    </a>
+                    {% if user.is_superuser %}
+                        <a type="button" href="{% url 'create_location' %}"
+                           class="btn btn-outline-primary px-5 mt-5" style="float: right;">
+                            Добавить склад
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             <ol class="breadcrumb">
