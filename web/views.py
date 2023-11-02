@@ -35,6 +35,8 @@ class MainView(View, UserMixin):
     """ Представление дашборда
     """
     def get(self, *args, **kwargs):
+        if not self.has_login(request=self.request):
+            return HttpResponseRedirect('/auth')
         return render(self.request, "web/index.html", context=self.get_context_data())
 
     @staticmethod
@@ -98,13 +100,16 @@ class LogOut(View):
         }
         logger.debug(f'User logout {self.request.user.username} success')
         logout(self.request)
-        return render(self.request, 'web/login.html', context)
+        return HttpResponseRedirect('/auth')
 
 
-class Profile(View):
+class Profile(View, UserMixin):
     """ Личный кабинет пользователя
     """
     def get(self, *args, **kwargs):
+        if not self.has_login(request=self.request):
+            return HttpResponseRedirect('/auth')
+
         context = {
             'title': f'Личный кабинет',
             'form': forms.ProfileForm(
@@ -118,6 +123,9 @@ class Profile(View):
         return render(self.request, 'web/profile.html', context)
 
     def post(self, *args, **kwargs):
+        if not self.has_login(request=self.request):
+            return HttpResponseRedirect('/auth')
+
         form = forms.ProfileForm(self.request.POST)
         if form.is_valid():
             if form.data.get('first_name'):
@@ -494,7 +502,7 @@ class LocationDetail(UserMixin, DetailView):
     context_object_name = 'location'
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request):
+        if not self.has_permission(request=request) and self.get_object() != self.request.user.location:
             return HttpResponseRedirect('/locations')
         return super(LocationDetail, self).get(request, *args, **kwargs)
 
