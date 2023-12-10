@@ -499,6 +499,8 @@ class LocationList(UserMixin, ListView):
 
     def get_queryset(self):
         sort_param = self.request.GET.get('sort')
+        if sort_param == "assets_count":
+            sort_param = "assets__count"
         if sort_param:
             self.ordering = sort_param
         ordering = f'-{self.ordering}' if self.ordering_desc else f'{self.ordering}'
