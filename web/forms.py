@@ -99,7 +99,7 @@ class CreateAssetForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super(CreateAssetForm, self).__init__(*args, **kwargs)
         if user and not user.is_superuser:
-            self.fields['location'].queryset = Location.objects.filter(id=user.location.id)
+            self.fields['location'].queryset = user.locations.all()
 
     class Meta:
         model = Asset
@@ -159,9 +159,11 @@ class UpdateAssetForm(CreateAssetForm):
         user = kwargs.pop('user', None)
         super(UpdateAssetForm, self).__init__(*args, **kwargs)
         if object_id and isinstance(object_id, int):
-            self.fields['parent'].queryset = Asset.objects.exclude(id=object_id).filter(location=user.location)
+            self.fields['parent'].queryset = Asset.objects.exclude(id=object_id).filter(
+                location__in=user.locations.all()
+            )
         if user and not user.is_superuser:
-            self.fields['location'].queryset = Location.objects.filter(id=user.location.id)
+            self.fields['location'].queryset = user.locations.all()
 
 
 class CloneAssetForm(forms.ModelForm):
