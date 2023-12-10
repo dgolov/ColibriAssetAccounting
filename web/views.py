@@ -147,6 +147,35 @@ class Profile(View, UserMixin):
         return HttpResponseRedirect('/')
 
 
+class Search(View):
+    """ Поиск по активам и складам
+    """
+    ordering = 'name'
+    ordering_desc = False
+
+    def get(self, *args, **kwargs):
+        sort_param = self.request.GET.get('sort')
+
+        if 'desc' in self.request.GET:
+            self.ordering_desc = not self.ordering_desc
+        if sort_param:
+            self.ordering = sort_param
+
+        ordering = f'-{self.ordering}' if self.ordering_desc else f'{self.ordering}'
+
+        search_query = self.request.GET.get('search', '')
+        assets = Asset.objects.filter(name__icontains=search_query).order_by(ordering)
+        locations = Location.objects.filter(name__icontains=search_query).order_by(ordering)
+        return render(
+            self.request,
+            template_name='web/search.html',
+            context={
+                'assets': assets,
+                'locations': locations,
+            }
+        )
+
+
 class AssetList(UserMixin, ListView):
     """ Представление главной страницы (список активов)
     """
