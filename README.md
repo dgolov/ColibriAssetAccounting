@@ -4,6 +4,7 @@
 ![image](https://img.shields.io/badge/css-3-blue?logo=css3)
 ![image](https://img.shields.io/badge/html-5-red?logo=html5)
 ![image](https://img.shields.io/badge/bootstrap-blue?logo=bootstrap)
+![image](https://img.shields.io/badge/docker-black?logo=docker)
 
 # Учет активов ООО Колибри
 
@@ -74,3 +75,5 @@ POSTGRES_PASSWORD=dbpassword
 - HTML5
 - CSS3
 - Bootstrap
+- Docker
+- Docker-compose
