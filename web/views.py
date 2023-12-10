@@ -154,6 +154,7 @@ class AssetList(UserMixin, ListView):
     template_name = 'web/assets.html'
     context_object_name = 'assets'
     paginate_by = 30
+    ordering = 'name'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
@@ -193,10 +194,7 @@ class AssetList(UserMixin, ListView):
     def get_queryset(self):
         query = Asset.objects.filter(is_active=True, parent=None).order_by('name')
         if not self.request.user.is_superuser:
-            query = Asset.objects.filter(
-                is_active=True,
-                parent=None
-            ).order_by('name').filter(location__in=self.request.user.locations.all())
+            query = query.filter(location__in=self.request.user.locations.all())
         return query
 
 
