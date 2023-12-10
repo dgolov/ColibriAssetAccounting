@@ -1,0 +1,11 @@
+<a href="{% if request.GET.search %}?search={{ request.GET.search }}&{% endif %}{% if request.GET.page %}?page={{ request.GET.page }}&{% endif %}{% if not request.GET.page or not request.GET.search %}?{% endif %}sort={{ sort_arg }}{% if not request.GET.desc and request.GET.sort == sort_arg %}&desc=1{% else %}{% endif %}">
+    {% if request.GET.sort == sort_arg %}
+        {% if request.GET.desc %}
+            <i class="fa fa-sort-desc float-right"></i>
+        {% else %}
+            <i class="fa fa-sort-asc float-right"></i>
+        {% endif %}
+    {% else %}
+        <i class="fa fa-sort float-right"></i>
+    {% endif %}
+</a>
