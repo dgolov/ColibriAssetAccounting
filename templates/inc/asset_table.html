@@ -1,0 +1,78 @@
+<table class="table table-striped table-bordered table-hover" id="example-table" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th>
+            Наименование {% include 'inc/sorting.html' with sort_arg='name' %}
+        </th>
+        <th>
+            Местоположение {% include 'inc/sorting.html' with sort_arg='location' %}
+        </th>
+        <th>
+            Стоимость {% include 'inc/sorting.html' with sort_arg='price' %}
+        </th>
+        <th>
+            Год закупки {% include 'inc/sorting.html' with sort_arg='year_of_purchase' %}
+        </th>
+        <th>
+            Статус {% include 'inc/sorting.html' with sort_arg='status' %}
+        </th>
+        <th>
+            Состояние {% include 'inc/sorting.html' with sort_arg='state' %}
+        </th>
+        <th>
+            Количество {% include 'inc/sorting.html' with sort_arg='count' %}
+        </th>
+    </tr>
+    </thead>
+    {% if assets|length > 15 %}
+        <tfoot>
+        <tr>
+            <th>
+                Наименование {% include 'inc/sorting.html' with sort_arg='name' %}
+            </th>
+            <th>
+                Местоположение {% include 'inc/sorting.html' with sort_arg='location' %}
+            </th>
+            <th>
+                Стоимость {% include 'inc/sorting.html' with sort_arg='price' %}
+            </th>
+            <th>
+                Год закупки {% include 'inc/sorting.html' with sort_arg='year_of_purchase' %}
+            </th>
+            <th>
+                Статус {% include 'inc/sorting.html' with sort_arg='status' %}
+            </th>
+            <th>
+                Состояние {% include 'inc/sorting.html' with sort_arg='state' %}
+            </th>
+            <th>
+                Количество {% include 'inc/sorting.html' with sort_arg='count' %}
+            </th>
+        </tr>
+        </tfoot>
+    {% endif %}
+    <tbody>
+    {% for asset in assets %}
+        <tr>
+            <td>
+                <a href="/assets/{{ asset.pk }}">{{ asset.name }}</a>
+                {% if asset.children_list.all|length > 0 %}
+                    <button class="show-btn btn btn-primary float-right width30"
+                            data-target="child-{{ asset.pk }}">
+                        +
+                    </button>
+                {% endif %}
+            </td>
+            <td>{{ asset.location.name }}</td>
+            <td>{{ asset.price }}</td>
+            <td>{{ asset.year_of_purchase.year }}</td>
+            <td>{{ asset.get_status_display }}</td>
+            <td>{{ asset.state }}</td>
+            <td>{{ asset.count }}</td>
+        </tr>
+        {% if asset.children_list.all|length > 0 %}
+            {% include 'inc/childrenRows.html' %}
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
