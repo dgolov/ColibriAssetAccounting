@@ -37,8 +37,7 @@ docker-compose up --build -d
 ### Create user via docker
 
 ```shell
-docker exec -it colibriassetaccounting_web_1 bash
-python manage.py createsuperuser
+docker exec -it colibriassetaccounting_web_1 python manage.py createsuperuser
 ```
 
 ### Config example (Add to .env file)
