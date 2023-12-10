@@ -11,6 +11,12 @@ class Location(models.Model):
     phone = models.CharField(max_length=32, verbose_name="Номер телефона", blank=True, null=True)
     description = models.TextField(verbose_name="Описание", blank=True, null=True)
 
+    def assets_count(self) -> int:
+        count = 0
+        for asset in self.assets.all():
+            count += asset.count
+        return count
+
     def __str__(self):
         return self.name
 
