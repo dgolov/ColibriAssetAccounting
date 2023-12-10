@@ -176,7 +176,7 @@ class AssetList(UserMixin, ListView):
                 ).order_by('name')
 
         if asset_query and not self.request.user.is_superuser:
-            asset_query.filter(location=self.request.user.location)
+            asset_query.filter(location__in=self.request.user.locations.all())
             
         if asset_query:
             context['assets'] = asset_query
@@ -186,7 +186,7 @@ class AssetList(UserMixin, ListView):
         if self.request.user.is_superuser:
             context['locations'] = Location.objects.all()
         else:
-            context['locations'] = [self.request.user.location]
+            context['locations'] = self.request.user.locations.all()
             
         return context
 
@@ -196,7 +196,7 @@ class AssetList(UserMixin, ListView):
             query = Asset.objects.filter(
                 is_active=True,
                 parent=None
-            ).order_by('name').filter(location=self.request.user.location)
+            ).order_by('name').filter(location__in=self.request.user.locations.all())
         return query
 
 
@@ -208,7 +208,7 @@ class AssetDetail(UserMixin, DetailView):
     context_object_name = 'asset'
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(AssetDetail, self).get(request, *args, **kwargs)
 
@@ -267,7 +267,7 @@ class CreateAssertImage(UserMixin, CreateView):
         context = super(CreateAssertImage, self).get_context_data()
         try:
             asset = Asset.objects.get(pk=self._object_pk)
-            if not self.has_permission(request=self.request) and asset.location != self.request.user.location:
+            if not self.has_permission(request=self.request) and asset.location not in self.request.user.locations.all:
                 logger.warning(
                     f"There are not enough permissions (User: {self.request.user}) to edit the asset - {asset}"
                 )
@@ -305,7 +305,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
     model = AssetImage
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(DeleteAssertImage, self).get(request, *args, **kwargs)
 
@@ -333,7 +333,7 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
     form_class = forms.UpdateAssetForm
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(UpdateAsset, self).get(request, *args, **kwargs)
 
@@ -491,7 +491,7 @@ class LocationList(UserMixin, ListView):
         if self.has_permission(request=self.request):
             return Location.objects.all()
         else:
-            return [self.request.user.location]
+            return self.request.user.locations.all
 
 
 class LocationDetail(UserMixin, DetailView):
@@ -502,7 +502,7 @@ class LocationDetail(UserMixin, DetailView):
     context_object_name = 'location'
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object() != self.request.user.location:
+        if not self.has_permission(request=request) and self.get_object() not in self.request.user.locations.all():
             return HttpResponseRedirect('/locations')
         return super(LocationDetail, self).get(request, *args, **kwargs)
 
