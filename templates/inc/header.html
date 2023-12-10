@@ -11,7 +11,7 @@
     <div class="flexbox flex-1">
         <ul class="nav navbar-toolbar">
             <li>
-                <form class="navbar-search" action="/" id="search_form" onsubmit="Search()">
+                <form class="navbar-search" method="get" action="{% url 'search' %}" id="search_form">
                     <div class="rel">
                         <span class="search-icon"><i class="ti-search"></i></span>
                         <input class="form-control" name="search" placeholder="Поиск...">
