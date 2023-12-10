@@ -489,6 +489,8 @@ class LocationList(UserMixin, ListView):
     template_name = 'web/locations.html'
     context_object_name = 'locations'
     paginate_by = 30
+    ordering = 'name'
+    ordering_desc = False
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationList, self).get_context_data()
@@ -496,10 +498,20 @@ class LocationList(UserMixin, ListView):
         return context
 
     def get_queryset(self):
+        sort_param = self.request.GET.get('sort')
+        if sort_param:
+            self.ordering = sort_param
+        ordering = f'-{self.ordering}' if self.ordering_desc else f'{self.ordering}'
+
         if self.has_permission(request=self.request):
-            return Location.objects.all()
+            return Location.objects.all().order_by(ordering)
         else:
-            return self.request.user.locations.all
+            return self.request.user.locations.all().order_by(ordering)
+
+    def get(self, request, *args, **kwargs):
+        if 'desc' in request.GET:
+            self.ordering_desc = not self.ordering_desc
+        return super().get(request, *args, **kwargs)
 
 
 class LocationDetail(UserMixin, DetailView):
