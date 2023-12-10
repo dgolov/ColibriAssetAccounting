@@ -70,10 +70,15 @@ class NotificationsAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     """ Админ панель пользователя
     """
-    list_display = ('username', 'email', 'first_name', 'last_name', 'location')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'get_locations')
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('location',)}),
+        (None, {'fields': ('locations',)}),
     )
+
+    def get_locations(self, obj):
+        return "\n".join([location.name for location in obj.locations.all()])
+
+    get_locations.short_description = 'Склады'
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

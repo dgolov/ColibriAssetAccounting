@@ -22,13 +22,11 @@ class Location(models.Model):
 class CustomUser(AbstractUser):
     """ Расширенная модель пользователя
     """
-    location = models.ForeignKey(
+    locations = models.ManyToManyField(
         Location,
-        on_delete=models.SET_NULL,
         verbose_name="Местоположение",
         related_name='users',
         blank=True,
-        null=True
     )
 
 

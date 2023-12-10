@@ -154,6 +154,8 @@ class AssetList(UserMixin, ListView):
     template_name = 'web/assets.html'
     context_object_name = 'assets'
     paginate_by = 30
+    ordering = 'name'
+    ordering_desc = False
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(AssetList, self).get_context_data()
@@ -176,7 +178,7 @@ class AssetList(UserMixin, ListView):
                 ).order_by('name')
 
         if asset_query and not self.request.user.is_superuser:
-            asset_query.filter(location=self.request.user.location)
+            asset_query.filter(location__in=self.request.user.locations.all())
             
         if asset_query:
             context['assets'] = asset_query
@@ -186,18 +188,24 @@ class AssetList(UserMixin, ListView):
         if self.request.user.is_superuser:
             context['locations'] = Location.objects.all()
         else:
-            context['locations'] = [self.request.user.location]
+            context['locations'] = self.request.user.locations.all()
             
         return context
 
     def get_queryset(self):
-        query = Asset.objects.filter(is_active=True, parent=None).order_by('name')
+        sort_param = self.request.GET.get('sort')
+        if sort_param:
+            self.ordering = sort_param
+        ordering = f'-{self.ordering}' if self.ordering_desc else f'{self.ordering}'
+        query = Asset.objects.filter(is_active=True, parent=None).order_by(ordering)
         if not self.request.user.is_superuser:
-            query = Asset.objects.filter(
-                is_active=True,
-                parent=None
-            ).order_by('name').filter(location=self.request.user.location)
+            query = query.filter(location__in=self.request.user.locations.all())
         return query
+
+    def get(self, request, *args, **kwargs):
+        if 'desc' in request.GET:
+            self.ordering_desc = not self.ordering_desc
+        return super().get(request, *args, **kwargs)
 
 
 class AssetDetail(UserMixin, DetailView):
@@ -208,7 +216,7 @@ class AssetDetail(UserMixin, DetailView):
     context_object_name = 'asset'
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(AssetDetail, self).get(request, *args, **kwargs)
 
@@ -267,7 +275,7 @@ class CreateAssertImage(UserMixin, CreateView):
         context = super(CreateAssertImage, self).get_context_data()
         try:
             asset = Asset.objects.get(pk=self._object_pk)
-            if not self.has_permission(request=self.request) and asset.location != self.request.user.location:
+            if not self.has_permission(request=self.request) and asset.location not in self.request.user.locations.all:
                 logger.warning(
                     f"There are not enough permissions (User: {self.request.user}) to edit the asset - {asset}"
                 )
@@ -305,7 +313,7 @@ class DeleteAssertImage(UserMixin, DeleteView):
     model = AssetImage
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(DeleteAssertImage, self).get(request, *args, **kwargs)
 
@@ -333,7 +341,7 @@ class UpdateAsset(UserMixin, AssetMixin, UpdateView):
     form_class = forms.UpdateAssetForm
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object().location != request.user.location:
+        if not self.has_permission(request=request) and self.get_object().location not in request.user.locations.all():
             return HttpResponseRedirect('/assets')
         return super(UpdateAsset, self).get(request, *args, **kwargs)
 
@@ -481,6 +489,8 @@ class LocationList(UserMixin, ListView):
     template_name = 'web/locations.html'
     context_object_name = 'locations'
     paginate_by = 30
+    ordering = 'name'
+    ordering_desc = False
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(LocationList, self).get_context_data()
@@ -488,10 +498,20 @@ class LocationList(UserMixin, ListView):
         return context
 
     def get_queryset(self):
+        sort_param = self.request.GET.get('sort')
+        if sort_param:
+            self.ordering = sort_param
+        ordering = f'-{self.ordering}' if self.ordering_desc else f'{self.ordering}'
+
         if self.has_permission(request=self.request):
-            return Location.objects.all()
+            return Location.objects.all().order_by(ordering)
         else:
-            return [self.request.user.location]
+            return self.request.user.locations.all().order_by(ordering)
+
+    def get(self, request, *args, **kwargs):
+        if 'desc' in request.GET:
+            self.ordering_desc = not self.ordering_desc
+        return super().get(request, *args, **kwargs)
 
 
 class LocationDetail(UserMixin, DetailView):
@@ -502,7 +522,7 @@ class LocationDetail(UserMixin, DetailView):
     context_object_name = 'location'
 
     def get(self, request, *args, **kwargs):
-        if not self.has_permission(request=request) and self.get_object() != self.request.user.location:
+        if not self.has_permission(request=request) and self.get_object() not in self.request.user.locations.all():
             return HttpResponseRedirect('/locations')
         return super(LocationDetail, self).get(request, *args, **kwargs)
 
