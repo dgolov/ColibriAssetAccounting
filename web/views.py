@@ -192,7 +192,7 @@ class AssetList(UserMixin, ListView):
         return context
 
     def get_queryset(self):
-        query = Asset.objects.filter(is_active=True, parent=None).order_by('name')
+        query = Asset.objects.filter(is_active=True, parent=None).order_by(self.ordering)
         if not self.request.user.is_superuser:
             query = query.filter(location__in=self.request.user.locations.all())
         return query
