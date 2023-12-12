@@ -93,11 +93,6 @@ class LogOut(View):
     """ Выход из системы
     """
     def get(self, *args, **kwargs):
-        auth_form = forms.AuthForm
-        context = {
-            'title': "Вход",
-            'form': auth_form
-        }
         logger.debug(f'User logout {self.request.user.username} success')
         logout(self.request)
         return HttpResponseRedirect('/auth')
