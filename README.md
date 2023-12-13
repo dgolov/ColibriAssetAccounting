@@ -1,3 +1,11 @@
+![image](https://img.shields.io/badge/python-3.10-blue?logo=python)
+![image](https://img.shields.io/badge/django-3-blue?logo=django)
+![image](https://img.shields.io/badge/redis-black?logo=redis)
+![image](https://img.shields.io/badge/css-3-blue?logo=css3)
+![image](https://img.shields.io/badge/html-5-red?logo=html5)
+![image](https://img.shields.io/badge/bootstrap-blue?logo=bootstrap)
+![image](https://img.shields.io/badge/docker-black?logo=docker)
+
 # Учет активов ООО Колибри
 
 Приложение учета активов, отображения состояния, местанахождения, истории активов для ООО Колибри
@@ -29,8 +37,7 @@ docker-compose up --build -d
 ### Create user via docker
 
 ```shell
-docker exec -it colibriassetaccounting_web_1 bash
-python manage.py createsuperuser
+docker exec -it colibriassetaccounting_web_1 python manage.py createsuperuser
 ```
 
 ### Config example (Add to .env file)
@@ -67,3 +74,5 @@ POSTGRES_PASSWORD=dbpassword
 - HTML5
 - CSS3
 - Bootstrap
+- Docker
+- Docker-compose
